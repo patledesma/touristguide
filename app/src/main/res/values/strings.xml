@@ -1,0 +1,62 @@
+<resources>
+    <string name="app_name">Tourist Guide</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+    <string name="app_description">Tourist Guide App for Sultan Kudarat</string>
+
+    <!--MENU-->
+    <string name="map">Map</string>
+    <string name="visited_places">Visited Places</string>
+    <string name="events">Events</string>
+    <string name="mark">Mark</string>
+    <string name="communicate">Communicate</string>
+    <string name="share">Share</string>
+    <string name="logs">Logs</string>
+    <string name="title_activity_maps">Map</string>
+
+    <string-array name="events">
+        <item>Bansadayaw (Bagumbayan)</item>
+        <item>Kastifun (Columbio)</item>
+        <item>Hinabyog (Esperanza)</item>
+        <item>Pasundayag (Isulan)</item>
+        <item>Salagaan (Kalamansig)</item>
+        <item>Timpuyog (Lambayong)</item>
+        <item>Hinugyaw (Lebak)</item>
+        <item>Kanduli (Lutayan)</item>
+        <item>Kaiilang (Palimbang)</item>
+        <item>Sambuyawan (Pres. Quirino)</item>
+        <item>Sulok (Sen. Ninoy Aquino)</item>
+        <item>Talakudong (Tacurong City)</item>
+        <item>Inugyunay (Tacurong City)</item>
+    </string-array>
+
+    <string-array name="dates">
+        <item>September 10</item>
+        <item>August 6</item>
+        <item>November 22</item>
+        <item>September 12</item>
+        <item>December 29</item>
+        <item>October 29</item>
+        <item>August 18</item>
+        <item>October 12</item>
+        <item>May 14</item>
+        <item>November 22</item>
+        <item>February 17</item>
+        <item>September 18</item>
+        <item>December 23</item>
+    </string-array>
+
+    <string-array name="places">
+        <item>Tacurong:</item>
+        <item>Esperanza:</item>
+    </string-array>
+
+    <string-array name="latlong">
+        <item>Lat: 6.687757, Long: 124.678383</item>
+        <item>Lat: 6.707771, Long: 124.543727</item>
+    </string-array>
+
+</resources>
