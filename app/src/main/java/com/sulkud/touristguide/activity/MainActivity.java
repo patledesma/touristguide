@@ -22,7 +22,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.sulkud.touristguide.R;
 import com.sulkud.touristguide.fragment.EventsFragment;
-import com.sulkud.touristguide.fragment.VisitedPlacesFragment;
+import com.sulkud.touristguide.fragment.PlacesFragment;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback {
@@ -60,7 +60,7 @@ public class MainActivity extends AppCompatActivity
         mapFragment.getMapAsync(this);
 
         eventsFragment = new EventsFragment();
-        placesFragment = new VisitedPlacesFragment();
+        placesFragment = new PlacesFragment();
     }
 
     @Override

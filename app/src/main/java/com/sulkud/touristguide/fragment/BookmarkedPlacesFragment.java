@@ -11,7 +11,7 @@ import android.widget.ListView;
 import com.sulkud.touristguide.R;
 import com.sulkud.touristguide.adapter.EventsAdapter;
 
-public class VisitedPlacesFragment extends Fragment {
+public class BookmarkedPlacesFragment extends Fragment {
 
     ViewGroup view;
     private ListView lvVisitedPlaces;
@@ -19,10 +19,11 @@ public class VisitedPlacesFragment extends Fragment {
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        view = (ViewGroup) inflater.inflate(R.layout.fragment_visited_places, null);
+    public View onCreateView (LayoutInflater inflater, @Nullable ViewGroup
+            container, @Nullable Bundle savedInstanceState){
+        view = (ViewGroup) inflater.inflate(R.layout.fragment_bookmarked_places, null);
 
-        lvVisitedPlaces = (ListView) view.findViewById(R.id.lvVistedPlaces);
+        lvVisitedPlaces = (ListView) view.findViewById(R.id.lvBookmarkedPlaces);
         adapter = new EventsAdapter(getActivity().getApplicationContext(),
                 getActivity().getResources().getStringArray(R.array.places),
                 getActivity().getResources().getStringArray(R.array.latlong));
