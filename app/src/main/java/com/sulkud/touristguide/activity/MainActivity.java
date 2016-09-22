@@ -28,7 +28,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.sulkud.touristguide.R;
 import com.sulkud.touristguide.fragment.EventsFragment;
-import com.sulkud.touristguide.fragment.VisitedPlacesFragment;
+import com.sulkud.touristguide.fragment.PlacesFragment;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback {
@@ -92,7 +92,7 @@ public class MainActivity extends AppCompatActivity
         mapFragment.getMapAsync(this);
 
         eventsFragment = new EventsFragment();
-        visitedPlacesFragment = new VisitedPlacesFragment();
+        placesFragment = new PlacesFragment();
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -145,20 +145,20 @@ public class MainActivity extends AppCompatActivity
 
         if (id == R.id.nav_map) {
             removeFragment(eventsFragment);
-            removeFragment(visitedPlacesFragment);
+            removeFragment(placesFragment);
         } else if (id == R.id.nav_visited_places) {
-            switchFragment(visitedPlacesFragment);
+            switchFragment(placesFragment);
         } else if (id == R.id.nav_events) {
             switchFragment(eventsFragment);
         } else if (id == R.id.nav_mark) {
             removeFragment(eventsFragment); //temporary: just to remove fragments
-            removeFragment(visitedPlacesFragment);
+            removeFragment(placesFragment);
         } else if (id == R.id.nav_share) {
             removeFragment(eventsFragment); //temporary: just to remove fragments
-            removeFragment(visitedPlacesFragment);
+            removeFragment(placesFragment);
         } else if (id == R.id.nav_logs) {
             removeFragment(eventsFragment); //temporary: just to remove fragments
-            removeFragment(visitedPlacesFragment);
+            removeFragment(placesFragment);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
