@@ -28,7 +28,7 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback {
 
     private GoogleMap mMap;
-    private Fragment eventsFragment, visitedPlacesFragment;
+    private Fragment eventsFragment, placesFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,7 +60,7 @@ public class MainActivity extends AppCompatActivity
         mapFragment.getMapAsync(this);
 
         eventsFragment = new EventsFragment();
-        visitedPlacesFragment = new VisitedPlacesFragment();
+        placesFragment = new VisitedPlacesFragment();
     }
 
     @Override
@@ -103,20 +103,20 @@ public class MainActivity extends AppCompatActivity
 
         if (id == R.id.nav_map) {
             removeFragment(eventsFragment);
-            removeFragment(visitedPlacesFragment);
+            removeFragment(placesFragment);
         } else if (id == R.id.nav_visited_places) {
-            switchFragment(visitedPlacesFragment);
+            switchFragment(placesFragment);
         } else if (id == R.id.nav_events) {
             switchFragment(eventsFragment);
         } else if (id == R.id.nav_mark) {
             removeFragment(eventsFragment); //temporary: just to remove fragments
-            removeFragment(visitedPlacesFragment);
+            removeFragment(placesFragment);
         } else if (id == R.id.nav_share) {
             removeFragment(eventsFragment); //temporary: just to remove fragments
-            removeFragment(visitedPlacesFragment);
+            removeFragment(placesFragment);
         } else if (id == R.id.nav_logs) {
             removeFragment(eventsFragment); //temporary: just to remove fragments
-            removeFragment(visitedPlacesFragment);
+            removeFragment(placesFragment);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

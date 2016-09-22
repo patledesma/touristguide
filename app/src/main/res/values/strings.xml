@@ -9,7 +9,7 @@
 
     <!--MENU-->
     <string name="map">Map</string>
-    <string name="visited_places">Visited Places</string>
+    <string name="visited_places">Places</string>
     <string name="events">Events</string>
     <string name="mark">Mark</string>
     <string name="communicate">Communicate</string>
