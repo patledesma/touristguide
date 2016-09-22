@@ -1,5 +1,6 @@
 package com.sulkud.touristguide.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -13,7 +14,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
+import com.google.android.gms.common.GooglePlayServicesRepairableException;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -29,6 +35,7 @@ public class MainActivity extends AppCompatActivity
 
     private GoogleMap mMap;
     private Fragment eventsFragment, visitedPlacesFragment;
+    int PLACE_PICKER_REQUEST = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,11 +44,36 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+        try {
+            PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
+            startActivityForResult(builder.build(this), PLACE_PICKER_REQUEST);
+        } catch (GooglePlayServicesNotAvailableException e) {
+            e.printStackTrace();
+        } catch (GooglePlayServicesRepairableException e) {
+            e.printStackTrace();
+        }
+
+        FloatingActionButton fabHospital = (FloatingActionButton) findViewById(R.id.fabHospital);
+        fabHospital.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                Snackbar.make(view, "Nearby Hospitals will be shown", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+            }
+        });
+        FloatingActionButton fabHotel = (FloatingActionButton) findViewById(R.id.fabHotel);
+        fabHotel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Snackbar.make(view, "Nearby Hotels will be shown", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+            }
+        });
+        FloatingActionButton fabBank = (FloatingActionButton) findViewById(R.id.fabBank);
+        fabBank.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Snackbar.make(view, "Nearby Banks will be shown", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             }
         });
@@ -61,6 +93,16 @@ public class MainActivity extends AppCompatActivity
 
         eventsFragment = new EventsFragment();
         visitedPlacesFragment = new VisitedPlacesFragment();
+    }
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == PLACE_PICKER_REQUEST) {
+            if (resultCode == RESULT_OK) {
+                Place place = PlacePicker.getPlace(data, this);
+                String toastMsg = String.format("Place: %s", place.getName());
+                Toast.makeText(this, toastMsg, Toast.LENGTH_LONG).show();
+            }
+        }
     }
 
     @Override
