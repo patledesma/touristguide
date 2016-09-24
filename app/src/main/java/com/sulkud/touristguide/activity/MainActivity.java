@@ -1,25 +1,20 @@
 package com.sulkud.touristguide.activity;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.view.View;
-import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
+import android.view.View;
 
-import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
-import com.google.android.gms.common.GooglePlayServicesRepairableException;
-import com.google.android.gms.location.places.Place;
-import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -34,7 +29,7 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback {
 
     private GoogleMap mMap;
-    private Fragment eventsFragment, visitedPlacesFragment;
+    private Fragment eventsFragment, placesFragment;
     int PLACE_PICKER_REQUEST = 1;
 
     @Override
@@ -44,14 +39,14 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        try {
+        /*try {
             PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
             startActivityForResult(builder.build(this), PLACE_PICKER_REQUEST);
         } catch (GooglePlayServicesNotAvailableException e) {
             e.printStackTrace();
         } catch (GooglePlayServicesRepairableException e) {
             e.printStackTrace();
-        }
+        }*/
 
         FloatingActionButton fabHospital = (FloatingActionButton) findViewById(R.id.fabHospital);
         fabHospital.setOnClickListener(new View.OnClickListener() {
@@ -95,7 +90,7 @@ public class MainActivity extends AppCompatActivity
         placesFragment = new PlacesFragment();
     }
 
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    /*protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == PLACE_PICKER_REQUEST) {
             if (resultCode == RESULT_OK) {
                 Place place = PlacePicker.getPlace(data, this);
@@ -103,7 +98,7 @@ public class MainActivity extends AppCompatActivity
                 Toast.makeText(this, toastMsg, Toast.LENGTH_LONG).show();
             }
         }
-    }
+    }*/
 
     @Override
     public void onBackPressed() {
@@ -143,12 +138,16 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
+        Log.w("StackTrace", getSupportFragmentManager().getBackStackEntryCount() + " stack count");
+
         if (id == R.id.nav_map) {
             removeFragment(eventsFragment);
             removeFragment(placesFragment);
         } else if (id == R.id.nav_visited_places) {
+            removeFragment(eventsFragment);
             switchFragment(placesFragment);
         } else if (id == R.id.nav_events) {
+            removeFragment(placesFragment);
             switchFragment(eventsFragment);
         } else if (id == R.id.nav_mark) {
             removeFragment(eventsFragment); //temporary: just to remove fragments
@@ -170,7 +169,6 @@ public class MainActivity extends AppCompatActivity
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        // Add a marker in Sydney and move the camera
         LatLng tacurong = new LatLng(6.687757, 124.678383);
         mMap.addMarker(new MarkerOptions().position(tacurong).title("Marker in Tacurong"));
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(tacurong, 10.0f));
