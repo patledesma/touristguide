@@ -31,35 +31,80 @@
 
     </FrameLayout>
 
-    <LinearLayout
+    <com.sa90.materialarcmenu.ArcMenu
+        android:id="@+id/arcMenu"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_gravity="bottom|right">
+        android:layout_gravity="bottom|end"
+        app:menu_scr="@drawable/icon_menu"
+        app:menu_open="arc_left">
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/fabHospital"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom|end"
-            android:layout_margin="@dimen/fab_margin"
             android:src="@drawable/icon_hospital" />
-
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/fabHotel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|end"
-            android:layout_margin="@dimen/fab_margin"
-            android:src="@drawable/icon_hotel" />
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/fabBank"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom|end"
-            android:layout_margin="@dimen/fab_margin"
             android:src="@drawable/icon_bank" />
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fabHotel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/icon_hotel" />
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fabRestaurant"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/icon_restaurant" />
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fabTourist"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/icon_tourist" />
+
+
+    </com.sa90.materialarcmenu.ArcMenu>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="65dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:padding="10dp"
+        android:background="@color/white">
+
+        <EditText
+            android:id="@+id/editText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="4"
+            android:hint="Search Location Here"
+            android:paddingLeft="10dp"
+            android:layout_gravity="center_vertical"
+            android:background="@android:color/transparent"
+            android:shadowColor="@color/shadow"
+            android:shadowDx="30"
+            android:shadowDy="30"
+            android:maxLines="1"/>
+
+        <ImageButton
+            android:id="@+id/search_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"
+            android:onClick="onMapSearch"
+            android:src="@drawable/icon_search"
+            android:background="@android:color/transparent"
+            android:text="Search" />
 
     </LinearLayout>
 
