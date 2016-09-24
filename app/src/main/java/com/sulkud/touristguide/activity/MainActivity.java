@@ -322,6 +322,15 @@ public class MainActivity extends AppCompatActivity
             case R.id.fabTourist:
                 arcMenu.toggleMenu();
                 mMap.clear();
+                Log.d("onClick", "Button is Clicked");
+                url = getUrl(latitude, longitude, "poi.attraction");
+                dataTransfer = new Object[2];
+                dataTransfer[0] = mMap;
+                dataTransfer[1] = url;
+                Log.d("onClick", url);
+                getNearbyPlacesData = new GetNearbyPlacesData();
+                getNearbyPlacesData.execute(dataTransfer);
+                Toast.makeText(MainActivity.this,"Nearby Tourist Attractions", Toast.LENGTH_LONG).show();
                 break;
         }
     }
