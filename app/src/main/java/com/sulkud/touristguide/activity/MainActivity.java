@@ -1,6 +1,7 @@
 package com.sulkud.touristguide.activity;
 
 import android.Manifest;
+import android.app.Dialog;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
@@ -10,6 +11,7 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
@@ -21,6 +23,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -479,4 +482,21 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    public void showHistory(View v) {
+        final Dialog dialog = new Dialog(MainActivity.this);
+        dialog.setContentView(R.layout.dialog_history);
+        dialog.setTitle("History");
+
+        Button dialogButton = (Button) dialog.findViewById(R.id.bDismiss);
+        // if button is clicked, close the custom dialog
+        dialogButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        dialog.show();
+
+    }
 }
