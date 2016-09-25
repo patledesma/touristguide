@@ -1,19 +1,12 @@
 package com.sulkud.touristguide.activity;
 
-import android.Manifest;
-import android.app.Dialog;
-import android.content.pm.PackageManager;
-import android.location.Address;
-import android.location.Geocoder;
-import android.location.Location;
-import android.os.Build;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.NavigationView;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.DialogFragment;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
+import android.view.View;
+import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -22,17 +15,12 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.Toast;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GoogleApiAvailability;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.LocationListener;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
+import com.google.android.gms.common.GooglePlayServicesRepairableException;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -60,21 +48,7 @@ public class MainActivity extends AppCompatActivity
 
     private GoogleMap mMap;
     private Fragment eventsFragment, placesFragment;
-    private ArcMenu arcMenu;
-    private FloatingActionButton fabHospital, fabHotel, fabBank, fabRestaurant, fabTourist;
-    private DrawerLayout drawer;
-    private ActionBarDrawerToggle toggle;
-    private Toolbar toolbar;
-    private NavigationView navigationView;
-
-    double latitude;
-    double longitude;
-    private int PROXIMITY_RADIUS = 10000;
-    GoogleApiClient mGoogleApiClient;
-    Location mLastLocation;
-    Marker mCurrLocationMarker;
-    LocationRequest mLocationRequest;
-
+    int PLACE_PICKER_REQUEST = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,18 +57,23 @@ public class MainActivity extends AppCompatActivity
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            checkLocationPermission();
-        }
+        /*try {
+            PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
+            startActivityForResult(builder.build(this), PLACE_PICKER_REQUEST);
+        } catch (GooglePlayServicesNotAvailableException e) {
+            e.printStackTrace();
+        } catch (GooglePlayServicesRepairableException e) {
+            e.printStackTrace();
+        }*/
 
         //Check if Google Play Services Available or not
         if (!CheckGooglePlayServices()) {
             Log.d("onCreate", "Finishing test case since Google Play Services are not available");
             finish();
-        }
+            }
         else {
             Log.d("onCreate","Google Play Services available.");
-        }
+            }
 
 
         initialize();
@@ -102,7 +81,7 @@ public class MainActivity extends AppCompatActivity
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-    }
+            }
 
     public void initialize() {
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -131,17 +110,15 @@ public class MainActivity extends AppCompatActivity
         placesFragment = new PlacesFragment();
     }
 
-    private boolean CheckGooglePlayServices() {
-        GoogleApiAvailability googleAPI = GoogleApiAvailability.getInstance();
-        int result = googleAPI.isGooglePlayServicesAvailable(this);
-        if(result != ConnectionResult.SUCCESS) {
-            if(googleAPI.isUserResolvableError(result)) {
-                googleAPI.getErrorDialog(this, result,
-                        0).show();
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == PLACE_PICKER_REQUEST) {
+            if (resultCode == RESULT_OK) {
+                Place place = PlacePicker.getPlace(data, this);
+                String toastMsg = String.format("Place: %s", place.getName());
+                Toast.makeText(this, toastMsg, Toast.LENGTH_LONG).show();
             }
             return false;
         }
-        return true;
     }
 
     @Override
@@ -182,12 +159,16 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
+        Log.w("StackTrace", getSupportFragmentManager().getBackStackEntryCount() + " stack count");
+
         if (id == R.id.nav_map) {
             removeFragment(eventsFragment);
             removeFragment(placesFragment);
         } else if (id == R.id.nav_visited_places) {
+            removeFragment(eventsFragment);
             switchFragment(placesFragment);
         } else if (id == R.id.nav_events) {
+            removeFragment(placesFragment);
             switchFragment(eventsFragment);
         } else if (id == R.id.nav_mark) {
             removeFragment(eventsFragment); //temporary: just to remove fragments
@@ -209,45 +190,10 @@ public class MainActivity extends AppCompatActivity
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (ContextCompat.checkSelfPermission(this,
-                    Manifest.permission.ACCESS_FINE_LOCATION)
-                    == PackageManager.PERMISSION_GRANTED) {
-                buildGoogleApiClient();
-                mMap.setMyLocationEnabled(true);
-            }
-        }
-        else {
-            buildGoogleApiClient();
-            mMap.setMyLocationEnabled(true);
-        }
-
         // Add a marker in Sydney and move the camera
-        /*LatLng tacurong = new LatLng(6.687757, 124.678383);
-        marker = mMap.addMarker(new MarkerOptions().position(tacurong).title("Marker in Tacurong"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(tacurong, 10.0f));*/
-    }
-
-    public void onMapSearch(View view) {
-        EditText locationSearch = (EditText) findViewById(R.id.editText);
-        String location = locationSearch.getText().toString();
-        List<Address>addressList = null;
-
-        if (location != null || !location.equals("")) {
-            Geocoder geocoder = new Geocoder(this);
-            try {
-                addressList = geocoder.getFromLocationName(location, 1);
-
-                Address address = addressList.get(0);
-                LatLng latLng = new LatLng(address.getLatitude(), address.getLongitude());
-                mCurrLocationMarker.setPosition(latLng);
-                mCurrLocationMarker.setTitle("Marker");
-                mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+        LatLng tacurong = new LatLng(6.687757, 124.678383);
+        mMap.addMarker(new MarkerOptions().position(tacurong).title("Marker in Tacurong"));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(tacurong, 10.0f));
     }
 
     private void switchFragment(Fragment fragment) {
