@@ -25,6 +25,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -83,6 +84,10 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            checkLocationPermission();
+        }
 
         //Check if Google Play Services Available or not
         if (!CheckGooglePlayServices()) {
@@ -185,6 +190,7 @@ public class MainActivity extends AppCompatActivity
             removeFragment(eventsFragment);
             removeFragment(placesFragment);
             llSearch.setVisibility(View.VISIBLE);
+            this.setTitle("Maps");
         } else if (id == R.id.nav_visited_places) {
             removeFragment(eventsFragment);
             switchFragment(placesFragment);
@@ -193,18 +199,22 @@ public class MainActivity extends AppCompatActivity
             removeFragment(placesFragment);
             switchFragment(eventsFragment);
             llSearch.setVisibility(View.GONE);
+            this.setTitle("Events");
         } else if (id == R.id.nav_mark) {
             removeFragment(eventsFragment); //temporary: just to remove fragments
             removeFragment(placesFragment);
             llSearch.setVisibility(View.GONE);
+            this.setTitle("Marked Places");
         } else if (id == R.id.nav_share) {
             removeFragment(eventsFragment); //temporary: just to remove fragments
             removeFragment(placesFragment);
             llSearch.setVisibility(View.GONE);
+            this.setTitle("Share");
         } else if (id == R.id.nav_logs) {
             removeFragment(eventsFragment); //temporary: just to remove fragments
             removeFragment(placesFragment);
             llSearch.setVisibility(View.GONE);
+            this.setTitle("Logs");
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -426,13 +436,16 @@ public class MainActivity extends AppCompatActivity
         }
 
         //Place current location marker
-        latitude = location.getLatitude();
-        longitude = location.getLongitude();
-        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+//        latitude = location.getLatitude();
+        latitude = 6.687227;
+//        longitude = location.getLongitude();
+        longitude = 124.676925;
+//        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+        LatLng latLng = new LatLng(latitude, longitude);
         MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.position(latLng);
         markerOptions.title("Current Position");
-        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
+        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
         mCurrLocationMarker = mMap.addMarker(markerOptions);
 
         //move map camera
@@ -493,7 +506,6 @@ public class MainActivity extends AppCompatActivity
     public void showHistory(View v) {
         final Dialog dialog = new Dialog(MainActivity.this);
         dialog.setContentView(R.layout.dialog_history);
-        dialog.setTitle("History");
 
         Button dialogButton = (Button) dialog.findViewById(R.id.bDismiss);
         // if button is clicked, close the custom dialog
