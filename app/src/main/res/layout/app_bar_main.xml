@@ -73,6 +73,7 @@
     </com.sa90.materialarcmenu.ArcMenu>
 
     <LinearLayout
+        android:id="@+id/llSearch"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"

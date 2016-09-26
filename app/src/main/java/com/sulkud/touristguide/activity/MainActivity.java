@@ -1,12 +1,18 @@
 package com.sulkud.touristguide.activity;
 
-import android.content.Intent;
+import android.Manifest;
+import android.app.Dialog;
+import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.Fragment;
-import android.view.View;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -15,12 +21,18 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
-import com.google.android.gms.common.GooglePlayServicesRepairableException;
-import com.google.android.gms.location.places.Place;
-import com.google.android.gms.location.places.ui.PlacePicker;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -48,7 +60,22 @@ public class MainActivity extends AppCompatActivity
 
     private GoogleMap mMap;
     private Fragment eventsFragment, placesFragment;
-    int PLACE_PICKER_REQUEST = 1;
+
+    private ArcMenu arcMenu;
+    private FloatingActionButton fabHospital, fabHotel, fabBank, fabRestaurant, fabTourist;
+    private DrawerLayout drawer;
+    private ActionBarDrawerToggle toggle;
+    private Toolbar toolbar;
+    private NavigationView navigationView;
+
+    private LinearLayout llSearch;
+    private double latitude;
+    private double longitude;
+    private int PROXIMITY_RADIUS = 10000;
+    private GoogleApiClient mGoogleApiClient;
+    private Location mLastLocation;
+    private Marker mCurrLocationMarker;
+    private LocationRequest mLocationRequest;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,23 +84,13 @@ public class MainActivity extends AppCompatActivity
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        /*try {
-            PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
-            startActivityForResult(builder.build(this), PLACE_PICKER_REQUEST);
-        } catch (GooglePlayServicesNotAvailableException e) {
-            e.printStackTrace();
-        } catch (GooglePlayServicesRepairableException e) {
-            e.printStackTrace();
-        }*/
-
         //Check if Google Play Services Available or not
         if (!CheckGooglePlayServices()) {
             Log.d("onCreate", "Finishing test case since Google Play Services are not available");
             finish();
-            }
-        else {
-            Log.d("onCreate","Google Play Services available.");
-            }
+        } else {
+            Log.d("onCreate", "Google Play Services available.");
+        }
 
 
         initialize();
@@ -81,7 +98,7 @@ public class MainActivity extends AppCompatActivity
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-            }
+    }
 
     public void initialize() {
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -97,6 +114,7 @@ public class MainActivity extends AppCompatActivity
         fabBank = (FloatingActionButton) findViewById(R.id.fabBank);
         fabRestaurant = (FloatingActionButton) findViewById(R.id.fabRestaurant);
         fabTourist = (FloatingActionButton) findViewById(R.id.fabTourist);
+        llSearch = (LinearLayout) findViewById(R.id.llSearch);
 
         fabHospital.setOnClickListener(this);
         fabHotel.setOnClickListener(this);
@@ -110,15 +128,17 @@ public class MainActivity extends AppCompatActivity
         placesFragment = new PlacesFragment();
     }
 
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == PLACE_PICKER_REQUEST) {
-            if (resultCode == RESULT_OK) {
-                Place place = PlacePicker.getPlace(data, this);
-                String toastMsg = String.format("Place: %s", place.getName());
-                Toast.makeText(this, toastMsg, Toast.LENGTH_LONG).show();
+    private boolean CheckGooglePlayServices() {
+        GoogleApiAvailability googleAPI = GoogleApiAvailability.getInstance();
+        int result = googleAPI.isGooglePlayServicesAvailable(this);
+        if (result != ConnectionResult.SUCCESS) {
+            if (googleAPI.isUserResolvableError(result)) {
+                googleAPI.getErrorDialog(this, result,
+                        0).show();
             }
             return false;
         }
+        return true;
     }
 
     @Override
@@ -164,21 +184,27 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.nav_map) {
             removeFragment(eventsFragment);
             removeFragment(placesFragment);
+            llSearch.setVisibility(View.VISIBLE);
         } else if (id == R.id.nav_visited_places) {
             removeFragment(eventsFragment);
             switchFragment(placesFragment);
+            llSearch.setVisibility(View.GONE);
         } else if (id == R.id.nav_events) {
             removeFragment(placesFragment);
             switchFragment(eventsFragment);
+            llSearch.setVisibility(View.GONE);
         } else if (id == R.id.nav_mark) {
             removeFragment(eventsFragment); //temporary: just to remove fragments
             removeFragment(placesFragment);
+            llSearch.setVisibility(View.GONE);
         } else if (id == R.id.nav_share) {
             removeFragment(eventsFragment); //temporary: just to remove fragments
             removeFragment(placesFragment);
+            llSearch.setVisibility(View.GONE);
         } else if (id == R.id.nav_logs) {
             removeFragment(eventsFragment); //temporary: just to remove fragments
             removeFragment(placesFragment);
+            llSearch.setVisibility(View.GONE);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -190,10 +216,45 @@ public class MainActivity extends AppCompatActivity
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (ContextCompat.checkSelfPermission(this,
+                    Manifest.permission.ACCESS_FINE_LOCATION)
+                    == PackageManager.PERMISSION_GRANTED) {
+                buildGoogleApiClient();
+                mMap.setMyLocationEnabled(true);
+            }
+        }
+        else {
+            buildGoogleApiClient();
+            mMap.setMyLocationEnabled(true);
+        }
+
         // Add a marker in Sydney and move the camera
-        LatLng tacurong = new LatLng(6.687757, 124.678383);
+        /*LatLng tacurong = new LatLng(6.687757, 124.678383);
         mMap.addMarker(new MarkerOptions().position(tacurong).title("Marker in Tacurong"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(tacurong, 10.0f));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(tacurong, 10.0f));*/
+    }
+
+    public void onMapSearch(View view) {
+        EditText locationSearch = (EditText) findViewById(R.id.editText);
+        String location = locationSearch.getText().toString();
+        List<Address> addressList = null;
+
+        if (location != null || !location.equals("")) {
+            Geocoder geocoder = new Geocoder(this);
+            try {
+                addressList = geocoder.getFromLocationName(location, 1);
+
+                Address address = addressList.get(0);
+                LatLng latLng = new LatLng(address.getLatitude(), address.getLongitude());
+                mCurrLocationMarker.setPosition(latLng);
+                mCurrLocationMarker.setTitle("Marker");
+                mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     private void switchFragment(Fragment fragment) {
@@ -227,7 +288,7 @@ public class MainActivity extends AppCompatActivity
                 Log.d("onClick", url);
                 getNearbyPlacesData = new GetNearbyPlacesData();
                 getNearbyPlacesData.execute(dataTransfer);
-                Toast.makeText(MainActivity.this,"Nearby Hospitals", Toast.LENGTH_LONG).show();
+                Toast.makeText(MainActivity.this, "Nearby Hospitals", Toast.LENGTH_LONG).show();
                 break;
             case R.id.fabHotel:
                 arcMenu.toggleMenu();
@@ -240,7 +301,7 @@ public class MainActivity extends AppCompatActivity
                 Log.d("onClick", url);
                 getNearbyPlacesData = new GetNearbyPlacesData();
                 getNearbyPlacesData.execute(dataTransfer);
-                Toast.makeText(MainActivity.this,"Nearby Hotels", Toast.LENGTH_LONG).show();
+                Toast.makeText(MainActivity.this, "Nearby Hotels", Toast.LENGTH_LONG).show();
                 break;
             case R.id.fabBank:
                 arcMenu.toggleMenu();
@@ -253,7 +314,7 @@ public class MainActivity extends AppCompatActivity
                 Log.d("onClick", url);
                 getNearbyPlacesData = new GetNearbyPlacesData();
                 getNearbyPlacesData.execute(dataTransfer);
-                Toast.makeText(MainActivity.this,"Nearby Banks", Toast.LENGTH_LONG).show();
+                Toast.makeText(MainActivity.this, "Nearby Banks", Toast.LENGTH_LONG).show();
                 break;
             case R.id.fabRestaurant:
                 arcMenu.toggleMenu();
@@ -266,7 +327,7 @@ public class MainActivity extends AppCompatActivity
                 Log.d("onClick", url);
                 getNearbyPlacesData = new GetNearbyPlacesData();
                 getNearbyPlacesData.execute(dataTransfer);
-                Toast.makeText(MainActivity.this,"Nearby Restaurants", Toast.LENGTH_LONG).show();
+                Toast.makeText(MainActivity.this, "Nearby Restaurants", Toast.LENGTH_LONG).show();
                 break;
             case R.id.fabTourist:
                 arcMenu.toggleMenu();
@@ -279,13 +340,14 @@ public class MainActivity extends AppCompatActivity
                 Log.d("onClick", url);
                 getNearbyPlacesData = new GetNearbyPlacesData();
                 getNearbyPlacesData.execute(dataTransfer);
-                Toast.makeText(MainActivity.this,"Nearby Tourist Attractions", Toast.LENGTH_LONG).show();
+                Toast.makeText(MainActivity.this, "Nearby Tourist Attractions", Toast.LENGTH_LONG).show();
                 break;
         }
     }
 
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
-    public boolean checkLocationPermission(){
+
+    public boolean checkLocationPermission() {
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
@@ -376,9 +438,9 @@ public class MainActivity extends AppCompatActivity
         //move map camera
         mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
         mMap.animateCamera(CameraUpdateFactory.zoomTo(11));
-        Toast.makeText(MainActivity.this,"Your Current Location", Toast.LENGTH_LONG).show();
+        Toast.makeText(MainActivity.this, "Your Current Location", Toast.LENGTH_LONG).show();
 
-        Log.d("onLocationChanged", String.format("latitude:%.3f longitude:%.3f",latitude,longitude));
+        Log.d("onLocationChanged", String.format("latitude:%.3f longitude:%.3f", latitude, longitude));
 
         //stop location updates
         if (mGoogleApiClient != null) {
