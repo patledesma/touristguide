@@ -1,7 +1,10 @@
 package com.sulkud.touristguide.activity;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Dialog;
+import android.app.DownloadManager;
+import android.content.pm.PackageInstaller;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
@@ -49,6 +52,8 @@ import com.sulkud.touristguide.fragment.PlacesFragment;
 import com.sulkud.touristguide.helper.GetNearbyPlacesData;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity
@@ -517,6 +522,5 @@ public class MainActivity extends AppCompatActivity
         });
 
         dialog.show();
-
     }
 }
