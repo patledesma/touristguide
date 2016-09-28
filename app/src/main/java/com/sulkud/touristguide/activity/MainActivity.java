@@ -259,19 +259,23 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.nav_map) {
             removeFragment(eventsFragment);
             removeFragment(placesFragment);
+            removeFragment(navigationFragment);
             llSearch.setVisibility(View.VISIBLE);
             this.setTitle("Maps");
         } else if (id == R.id.nav_visited_places) {
             removeFragment(eventsFragment);
+            removeFragment(navigationFragment);
             switchFragment(placesFragment);
             llSearch.setVisibility(View.GONE);
         } else if (id == R.id.nav_events) {
             removeFragment(placesFragment);
+            removeFragment(navigationFragment);
             switchFragment(eventsFragment);
             llSearch.setVisibility(View.GONE);
             this.setTitle("Events");
         } else if (id == R.id.nav_navigate) {
             removeFragment(eventsFragment);
+            removeFragment(placesFragment);
             switchFragment(navigationFragment);
             llSearch.setVisibility(View.GONE);
             this.setTitle("Navigate");
@@ -297,82 +301,6 @@ public class MainActivity extends AppCompatActivity
             buildGoogleApiClient();
             mMap.setMyLocationEnabled(true);
         }
-
-        /*mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
-
-            @Override
-            public void onMapClick(LatLng point) {
-
-                if (markerPoints.size() == 0 || markerPoints.size() == 2) {
-                    mMap.clear();
-                    markerPoints.clear();
-                }
-
-                // Already 10 locations with 8 waypoints and 1 start location and 1 end location.
-                // Upto 8 waypoints are allowed in a query for non-business users
-                if (markerPoints.size() >= 2) {
-                    return;
-                }
-
-                // Adding new item to the ArrayList
-                markerPoints.add(point);
-
-                // Creating MarkerOptions
-                MarkerOptions options = new MarkerOptions();
-
-                // Setting the position of the marker
-                options.position(point);
-
-                *//**
-                 * For the start location, the color of marker is GREEN and
-                 * for the end location, the color of marker is RED and
-                 *//*
-                if (markerPoints.size() == 1) {
-                    options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
-                } else if (markerPoints.size() == 2) {
-                    options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
-                } else {
-                    options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
-                }
-
-                // Add new marker to the Google Map Android API V2
-                mMap.addMarker(options);
-            }
-        });
-
-        // The map will be cleared on long click
-        mMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
-
-            @Override
-            public void onMapLongClick(LatLng point) {
-                // Removes all the points from Google Map
-                mMap.clear();
-
-                // Removes all the points in the ArrayList
-                markerPoints.clear();
-            }
-        });*/
-
-        /*// Click event handler for Button btn_draw
-        drawRouteBtn.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                // Checks, whether start and end locations are captured
-                if (markerPoints.size() >= 2) {
-                    LatLng origin = markerPoints.get(0);
-                    LatLng dest = markerPoints.get(1);
-
-                    // Getting URL to the Google Directions API
-                    String url = getDirectionsUrl(origin, dest);
-
-                    DownloadTask downloadTask = new DownloadTask();
-
-                    // Start downloading json data from Google Directions API
-                    downloadTask.execute(url);
-                }
-            }
-        });*/
     }
 
     public void onMapSearch(View view) {
