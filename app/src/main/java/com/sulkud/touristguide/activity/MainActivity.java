@@ -47,8 +47,11 @@ import com.sulkud.touristguide.R;
 import com.sulkud.touristguide.fragment.EventsFragment;
 import com.sulkud.touristguide.fragment.PlacesFragment;
 import com.sulkud.touristguide.helper.GetNearbyPlacesData;
+import com.sulkud.touristguide.helper.database.DatabaseHandler;
+import com.sulkud.touristguide.models.PlaceModel;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity
@@ -68,6 +71,7 @@ public class MainActivity extends AppCompatActivity
     private ActionBarDrawerToggle toggle;
     private Toolbar toolbar;
     private NavigationView navigationView;
+    private Button visitedPlaceBtn, bookmarkPlaceBtn, drawRouteBtn;
 
     private LinearLayout llSearch;
     private double latitude;
@@ -77,6 +81,7 @@ public class MainActivity extends AppCompatActivity
     private Location mLastLocation;
     private Marker mCurrLocationMarker;
     private LocationRequest mLocationRequest;
+    private DatabaseHandler dbHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -120,17 +125,24 @@ public class MainActivity extends AppCompatActivity
         fabRestaurant = (FloatingActionButton) findViewById(R.id.fabRestaurant);
         fabTourist = (FloatingActionButton) findViewById(R.id.fabTourist);
         llSearch = (LinearLayout) findViewById(R.id.llSearch);
+        bookmarkPlaceBtn = (Button) findViewById(R.id.bookmarkPlaceBtn);
+        drawRouteBtn = (Button) findViewById(R.id.drawRouteBtn);
+        visitedPlaceBtn = (Button) findViewById(R.id.visitedPlaceBtn);
 
         fabHospital.setOnClickListener(this);
         fabHotel.setOnClickListener(this);
         fabBank.setOnClickListener(this);
         fabRestaurant.setOnClickListener(this);
         fabTourist.setOnClickListener(this);
+        bookmarkPlaceBtn.setOnClickListener(this);
+        drawRouteBtn.setOnClickListener(this);
+        visitedPlaceBtn.setOnClickListener(this);
 
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         eventsFragment = new EventsFragment();
         placesFragment = new PlacesFragment();
+        dbHandler = new DatabaseHandler(this);
     }
 
     private boolean CheckGooglePlayServices() {
@@ -252,14 +264,29 @@ public class MainActivity extends AppCompatActivity
 
         if (location != null || !location.equals("")) {
             Geocoder geocoder = new Geocoder(this);
+            String url = "";
+            Object[] dataTransfer;
+            GetNearbyPlacesData getNearbyPlacesData;
             try {
                 addressList = geocoder.getFromLocationName(location, 1);
 
                 Address address = addressList.get(0);
-                LatLng latLng = new LatLng(address.getLatitude(), address.getLongitude());
+                final LatLng latLng = new LatLng(address.getLatitude(), address.getLongitude());
                 mCurrLocationMarker.setPosition(latLng);
-                mCurrLocationMarker.setTitle("Marker");
-                mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
+                url = getCurrentPlaceUrl(latLng.latitude, latLng.longitude);
+                dataTransfer = new Object[2];
+                dataTransfer[0] = mMap;
+                dataTransfer[1] = url;
+                getNearbyPlacesData = new GetNearbyPlacesData();
+                getNearbyPlacesData.setResultListener(new GetNearbyPlacesData.ResultListener() {
+                    @Override
+                    public void onFinishRequest(List<HashMap<String, String>> place) {
+                        Log.w("onFinishRequest", place.get(0).toString());
+                        mCurrLocationMarker.setTitle(place.get(0).get("place_name"));
+                        mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
+                    }
+                });
+                getNearbyPlacesData.execute(dataTransfer);
 
             } catch (IOException e) {
                 e.printStackTrace();
@@ -352,6 +379,32 @@ public class MainActivity extends AppCompatActivity
                 getNearbyPlacesData.execute(dataTransfer);
                 Toast.makeText(MainActivity.this, "Nearby Tourist Attractions", Toast.LENGTH_LONG).show();
                 break;
+            case R.id.bookmarkPlaceBtn:
+                double bookmarkedLat = mCurrLocationMarker.getPosition().latitude;
+                double bookmarkedLng = mCurrLocationMarker.getPosition().longitude;
+
+                if (dbHandler.queryIfExistPlace(String.valueOf(bookmarkedLat), String.valueOf(bookmarkedLng), DatabaseHandler.TABLE_TAG_TYPE_BOOKMARKED)) {
+                    Toast.makeText(this, "Place is already bookmarked!", Toast.LENGTH_LONG).show();
+                } else {
+                    PlaceModel model = new PlaceModel(0, mCurrLocationMarker.getTitle(), String.valueOf(bookmarkedLat), String.valueOf(bookmarkedLng), "", DatabaseHandler.TABLE_TAG_TYPE_BOOKMARKED);
+                    dbHandler.addPlace(model, DatabaseHandler.TABLE_TAG_TYPE_BOOKMARKED);
+                    Toast.makeText(this, "Bookmarked Place...", Toast.LENGTH_LONG).show();
+                }
+                break;
+            case R.id.visitedPlaceBtn:
+                double visitedLat = mCurrLocationMarker.getPosition().latitude;
+                double visitedLng = mCurrLocationMarker.getPosition().longitude;
+
+                if (dbHandler.queryIfExistPlace(String.valueOf(visitedLat), String.valueOf(visitedLng), DatabaseHandler.TABLE_TAG_TYPE_VISITED)) {
+                    Toast.makeText(this, "Place is already bookmarked!", Toast.LENGTH_LONG).show();
+                } else {
+                    PlaceModel model = new PlaceModel(0, mCurrLocationMarker.getTitle(), String.valueOf(visitedLat), String.valueOf(visitedLng), "", DatabaseHandler.TABLE_TAG_TYPE_VISITED);
+                    dbHandler.addPlace(model, DatabaseHandler.TABLE_TAG_TYPE_VISITED);
+                    Toast.makeText(this, "Visited Place...", Toast.LENGTH_LONG).show();
+                }
+                break;
+            case R.id.drawRouteBtn:
+                break;
         }
     }
 
@@ -416,6 +469,14 @@ public class MainActivity extends AppCompatActivity
         googlePlacesUrl.append("&radius=" + PROXIMITY_RADIUS);
         googlePlacesUrl.append("&type=" + nearbyPlace);
         googlePlacesUrl.append("&sensor=true");
+        googlePlacesUrl.append("&key=" + "AIzaSyATuUiZUkEc_UgHuqsBJa1oqaODI-3mLs0");
+        Log.d("getUrl", googlePlacesUrl.toString());
+        return (googlePlacesUrl.toString());
+    }
+
+    private String getCurrentPlaceUrl(double latitude, double longitude) {
+        StringBuilder googlePlacesUrl = new StringBuilder("https://maps.googleapis.com/maps/api/place/nearbysearch/json?");
+        googlePlacesUrl.append("location=" + latitude + "," + longitude);
         googlePlacesUrl.append("&key=" + "AIzaSyATuUiZUkEc_UgHuqsBJa1oqaODI-3mLs0");
         Log.d("getUrl", googlePlacesUrl.toString());
         return (googlePlacesUrl.toString());

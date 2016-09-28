@@ -20,6 +20,12 @@ public class GetNearbyPlacesData extends AsyncTask<Object, String, String> {
     GoogleMap mMap;
     String url;
 
+    ResultListener resultListener;
+
+    public void setResultListener(ResultListener resultListener) {
+        this.resultListener = resultListener;
+    }
+
     @Override
     protected String doInBackground(Object... params) {
         try {
@@ -42,7 +48,12 @@ public class GetNearbyPlacesData extends AsyncTask<Object, String, String> {
         List<HashMap<String, String>> nearbyPlacesList = null;
         DataParser dataParser = new DataParser();
         nearbyPlacesList =  dataParser.parse(result);
-        ShowNearbyPlaces(nearbyPlacesList);
+        Log.i("GET_PLACE_DATA", nearbyPlacesList.toString());
+        if (resultListener != null) {
+            resultListener.onFinishRequest(nearbyPlacesList);
+        } else {
+            ShowNearbyPlaces(nearbyPlacesList);
+        }
         Log.d("GooglePlacesReadTask", "onPostExecute Exit");
     }
 
@@ -64,5 +75,9 @@ public class GetNearbyPlacesData extends AsyncTask<Object, String, String> {
             mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
             mMap.animateCamera(CameraUpdateFactory.zoomTo(11));
         }
+    }
+
+    public interface ResultListener{
+        void onFinishRequest(List<HashMap<String, String>> place);
     }
 }

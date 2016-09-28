@@ -73,40 +73,78 @@
     </com.sa90.materialarcmenu.ArcMenu>
 
     <LinearLayout
-        android:id="@+id/llSearch"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginTop="65dp"
-        android:layout_marginLeft="5dp"
-        android:layout_marginRight="5dp"
-        android:padding="10dp"
-        android:background="@color/white">
+        android:orientation="vertical">
 
-        <EditText
-            android:id="@+id/editText"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:id="@+id/llSearch"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="4"
-            android:hint="Search Location Here"
-            android:paddingLeft="10dp"
-            android:layout_gravity="center_vertical"
-            android:background="@android:color/transparent"
-            android:shadowColor="@color/shadow"
-            android:shadowDx="30"
-            android:shadowDy="30"
-            android:maxLines="1"/>
+            android:orientation="horizontal"
+            android:layout_marginTop="65dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:padding="10dp"
+            android:background="@color/white">
 
-        <ImageButton
-            android:id="@+id/search_button"
-            android:layout_width="wrap_content"
+            <EditText
+                android:id="@+id/editText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="4"
+                android:hint="Search Location Here"
+                android:paddingLeft="10dp"
+                android:layout_gravity="center_vertical"
+                android:background="@android:color/transparent"
+                android:textColor="#121314"
+                android:shadowColor="@color/shadow"
+                android:shadowDx="30"
+                android:shadowDy="30"
+                android:maxLines="1" />
+
+            <ImageButton
+                android:id="@+id/search_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.5"
+                android:onClick="onMapSearch"
+                android:src="@drawable/icon_search"
+                android:background="@android:color/transparent"
+                android:text="Search" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="0.5"
-            android:onClick="onMapSearch"
-            android:src="@drawable/icon_search"
-            android:background="@android:color/transparent"
-            android:text="Search" />
+            android:orientation="horizontal"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp">
 
+            <Button
+                android:id="@+id/visitedPlaceBtn"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Visited"/>
+
+            <Button
+                android:id="@+id/bookmarkPlaceBtn"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Bookmark this!"/>
+
+            <Button
+                android:id="@+id/drawRouteBtn"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Draw Route"/>
+
+        </LinearLayout>
     </LinearLayout>
+
 
 </android.support.design.widget.CoordinatorLayout>

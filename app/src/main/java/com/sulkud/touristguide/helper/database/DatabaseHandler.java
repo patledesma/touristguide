@@ -50,7 +50,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + KEY_PLACE_TAG + " TEXT" + ")";
         db.execSQL(CREATE_VISITED_TABLE);
 
-        String CREATE_BOOKMARK_TABLE = "CREATE TABLE " + TABLE_VISITED_PLACES + "("
+        String CREATE_BOOKMARK_TABLE = "CREATE TABLE " + TABLE_BOOKMARKED_PLACES + "("
                 + KEY_PLACE_ID + " INTEGER PRIMARY KEY,"
                 + KEY_PLACE_NAME + " TEXT,"
                 + KEY_LATITUDE + " TEXT,"
@@ -93,19 +93,12 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                         KEY_PLACE_DESCRIPTION,
                         KEY_PLACE_TAG}, KEY_PLACE_ID + "=?",
                 new String[]{String.valueOf(id)}, null, null, null, null);
-        if (cursor != null)
+        if (cursor != null) {
             cursor.moveToFirst();
-
-        PlaceModel place = new PlaceModel();
-        place.placeID = cursor.getString(0);
-        place.placeName = cursor.getString(1);
-        place.latitude = cursor.getString(2);
-        place.longitude = cursor.getString(3);
-        place.placeDescription = cursor.getString(4);
-        place.placeTag = cursor.getString(5);
-
+            return new PlaceModel(cursor.getInt(0), cursor.getString(1), cursor.getString(2), cursor.getString(3), cursor.getString(4), cursor.getString(5));
+        }
         // return place
-        return place;
+        return null;
     }
 
     public List<PlaceModel> getAllPlaces(String type) {
@@ -119,13 +112,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         // looping through all rows and adding to list
         if (cursor.moveToFirst()) {
             do {
-                PlaceModel place = new PlaceModel();
-                place.placeID = cursor.getString(0);
-                place.placeName = cursor.getString(1);
-                place.latitude = cursor.getString(2);
-                place.longitude = cursor.getString(3);
-                place.placeDescription = cursor.getString(4);
-                place.placeTag = cursor.getString(5);
+                PlaceModel place = new PlaceModel(cursor.getInt(0), cursor.getString(1), cursor.getString(2), cursor.getString(3), cursor.getString(4), cursor.getString(5));
                 // Adding contact to list
                 contactList.add(place);
             } while (cursor.moveToNext());
@@ -165,6 +152,21 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.delete((type.equals(TABLE_TAG_TYPE_VISITED) ? TABLE_VISITED_PLACES : TABLE_BOOKMARKED_PLACES), KEY_PLACE_ID + " = ?",
                 new String[]{String.valueOf(placeModel.placeID)});
         db.close();
+    }
+
+    public boolean queryIfExistPlace(String placeLat, String placeLong, String type) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "Select * from " + (type.equals(TABLE_TAG_TYPE_VISITED) ? TABLE_VISITED_PLACES : TABLE_BOOKMARKED_PLACES)
+                + " where " + KEY_LATITUDE + " = " + placeLat
+                + " AND " + KEY_LONGITUDE + " = " + placeLong;
+
+        Cursor cursor = db.rawQuery(query, null);
+        if (cursor.getCount() > 0) {
+            cursor.close();
+            return true;
+        }
+
+        return false;
     }
 
 }
