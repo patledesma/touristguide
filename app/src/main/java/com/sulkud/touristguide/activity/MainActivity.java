@@ -58,6 +58,11 @@ import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -85,11 +90,11 @@ public class MainActivity extends AppCompatActivity
     private double longitude;
     private int PROXIMITY_RADIUS = 10000;
     private GoogleApiClient mGoogleApiClient;
-    private Button btnDraw;
     private Location mLastLocation;
     private Marker mCurrLocationMarker;
     private LocationRequest mLocationRequest;
     private DatabaseHandler dbHandler;
+    private ArrayList<LatLng> markerPoints = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,8 +102,6 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        btnDraw = (Button) findViewById(R.id.btn_draw);
 
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             checkLocationPermission();
@@ -316,7 +319,7 @@ public class MainActivity extends AppCompatActivity
         });
 
         // Click event handler for Button btn_draw
-        btnDraw.setOnClickListener(new View.OnClickListener() {
+        drawRouteBtn.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
