@@ -9,6 +9,7 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.sulkud.touristguide.R;
+import com.sulkud.touristguide.models.PlaceModel;
 
 import java.util.List;
 

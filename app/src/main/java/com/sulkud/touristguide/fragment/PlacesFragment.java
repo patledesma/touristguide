@@ -21,6 +21,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.sulkud.touristguide.R;
 import com.sulkud.touristguide.interfaces.PlaceSelectedListener;
+import com.sulkud.touristguide.models.PlaceModel;
 
 import java.util.ArrayList;
 import java.util.List;
