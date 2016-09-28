@@ -7,6 +7,10 @@
     <string name="action_settings">Settings</string>
     <string name="app_description">Tourist Guide App for Sultan Kudarat</string>
 
+    <!--FACEBOOK-->
+    <string name="facebook_app_id">333028157041452</string>
+    <string name="shareOnFacebook">Share on Facebook</string>
+
     <!--MENU-->
     <string name="map">Map</string>
     <string name="visited_places">Places</string>
