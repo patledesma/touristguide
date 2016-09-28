@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.LinearInterpolator;
 import android.widget.ProgressBar;
@@ -23,10 +24,9 @@ public class SplashActivity extends AppCompatActivity {
 
         progressFg = (ProgressBar) findViewById(R.id.circular_progress_fg);
 
-        ObjectAnimator progressAnimator = ObjectAnimator.ofInt(progressFg, "progress", 0, 1000);
-        progressAnimator.setDuration(100000);
+        ObjectAnimator progressAnimator = ObjectAnimator.ofInt(progressFg, "progress", 0, 500);
+        progressAnimator.setDuration(5000);
         progressAnimator.setInterpolator(new LinearInterpolator());
-        progressAnimator.start();
         progressAnimator.addListener(new Animator.AnimatorListener() {
             @Override
             public void onAnimationStart(Animator animation) {
@@ -35,6 +35,7 @@ public class SplashActivity extends AppCompatActivity {
 
             @Override
             public void onAnimationEnd(Animator animation) {
+                Log.e("HELLOW", "animation end");
                 Intent intent = new Intent(SplashActivity.this, MainActivity.class);
                 startActivity(intent);
                 finish();
@@ -50,6 +51,6 @@ public class SplashActivity extends AppCompatActivity {
 
             }
         });
-
+        progressAnimator.start();
     }
 }
