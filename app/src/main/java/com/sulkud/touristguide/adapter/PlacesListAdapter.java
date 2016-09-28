@@ -13,10 +13,6 @@ import com.sulkud.touristguide.models.PlaceModel;
 
 import java.util.List;
 
-/**
- * Created by OMIPLEKEVIN on Sep 24, 024.
- */
-
 public class PlacesListAdapter extends BaseAdapter {
 
     private Context context;
