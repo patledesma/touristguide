@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -29,6 +30,16 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.facebook.AccessToken;
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
+import com.facebook.HttpMethod;
+import com.facebook.share.Sharer;
+import com.facebook.share.model.ShareLinkContent;
+import com.facebook.share.widget.ShareDialog;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -96,6 +107,10 @@ public class MainActivity extends AppCompatActivity
     private DatabaseHandler dbHandler;
     private ArrayList<LatLng> markerPoints = new ArrayList<>();
 
+    //FACEBOOK FIELDS
+    private CallbackManager facebookCallbackManager;
+    private ShareDialog facebookShareDialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -116,7 +131,7 @@ public class MainActivity extends AppCompatActivity
         }
 
         initialize();
-
+        initializeFacebookAPI();
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
@@ -157,6 +172,27 @@ public class MainActivity extends AppCompatActivity
         dbHandler = new DatabaseHandler(this);
     }
 
+    private void initializeFacebookAPI(){
+        facebookCallbackManager = CallbackManager.Factory.create();
+        facebookShareDialog = new ShareDialog(this);
+        facebookShareDialog.registerCallback(facebookCallbackManager, new FacebookCallback<Sharer.Result>() {
+            @Override
+            public void onSuccess(Sharer.Result result) {
+                Toast.makeText(MainActivity.this, "facebook onSuccess()", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onCancel() {
+                Toast.makeText(MainActivity.this, "facebook onCancel()", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onError(FacebookException error) {
+                Toast.makeText(MainActivity.this, "facebook onError()", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
     private boolean CheckGooglePlayServices() {
         GoogleApiAvailability googleAPI = GoogleApiAvailability.getInstance();
         int result = googleAPI.isGooglePlayServicesAvailable(this);
@@ -195,7 +231,17 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.shareOnFacebook) {
+            if (ShareDialog.canShow(ShareLinkContent.class)) {
+                ShareLinkContent linkContent = new ShareLinkContent.Builder()
+                        .setContentTitle("Hi! Currently @ " + mCurrLocationMarker.getTitle())
+                        .setContentDescription(mCurrLocationMarker.getPosition().latitude + " " + mCurrLocationMarker.getPosition().longitude)
+                        .setContentUrl(Uri.parse("https://www.google.com/maps/preview/@" +
+                                mCurrLocationMarker.getPosition().latitude + "," +
+                                mCurrLocationMarker.getPosition().longitude + ",20z"))
+                        .build();
+                facebookShareDialog.show(linkContent);
+            }
             return true;
         }
 
@@ -577,7 +623,7 @@ public class MainActivity extends AppCompatActivity
         LatLng latLng = new LatLng(latitude, longitude);
         MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.position(latLng);
-        markerOptions.title("Current Position");
+        markerOptions.title("Tacurong City");
         markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
         mCurrLocationMarker = mMap.addMarker(markerOptions);
 
