@@ -18,6 +18,10 @@
             android:id="@+id/nav_mark"
             android:icon="@drawable/icon_mark"
             android:title="@string/mark" />
+        <item
+            android:id="@+id/nav_fare"
+            android:icon="@drawable/icon_fare"
+            android:title="@string/fare" />
     </group>
 
     <item android:title="@string/communicate">

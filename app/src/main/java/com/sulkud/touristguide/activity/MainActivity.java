@@ -28,6 +28,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.FacebookSdk;
+import com.facebook.appevents.AppEventsLogger;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -45,10 +47,12 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.sa90.materialarcmenu.ArcMenu;
 import com.sulkud.touristguide.R;
 import com.sulkud.touristguide.fragment.EventsFragment;
+import com.sulkud.touristguide.fragment.FareFragment;
 import com.sulkud.touristguide.fragment.PlacesFragment;
 import com.sulkud.touristguide.helper.GetNearbyPlacesData;
 
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity
@@ -60,7 +64,7 @@ public class MainActivity extends AppCompatActivity
         LocationListener {
 
     private GoogleMap mMap;
-    private Fragment eventsFragment, placesFragment;
+    private Fragment eventsFragment, placesFragment, fareFragment;
 
     private ArcMenu arcMenu;
     private FloatingActionButton fabHospital, fabHotel, fabBank, fabRestaurant, fabTourist;
@@ -97,12 +101,14 @@ public class MainActivity extends AppCompatActivity
             Log.d("onCreate", "Google Play Services available.");
         }
 
-
         initialize();
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+        /*FacebookSdk.sdkInitialize(getApplicationContext());
+        AppEventsLogger.activateApp(this);*/
     }
 
     public void initialize() {
@@ -131,6 +137,7 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
         eventsFragment = new EventsFragment();
         placesFragment = new PlacesFragment();
+        fareFragment = new FareFragment();
     }
 
     private boolean CheckGooglePlayServices() {
@@ -201,20 +208,25 @@ public class MainActivity extends AppCompatActivity
             llSearch.setVisibility(View.GONE);
             this.setTitle("Events");
         } else if (id == R.id.nav_mark) {
-            removeFragment(eventsFragment); //temporary: just to remove fragments
+            removeFragment(eventsFragment);
             removeFragment(placesFragment);
             llSearch.setVisibility(View.GONE);
             this.setTitle("Marked Places");
         } else if (id == R.id.nav_share) {
-            removeFragment(eventsFragment); //temporary: just to remove fragments
+            removeFragment(eventsFragment);
             removeFragment(placesFragment);
             llSearch.setVisibility(View.GONE);
             this.setTitle("Share");
         } else if (id == R.id.nav_logs) {
-            removeFragment(eventsFragment); //temporary: just to remove fragments
+            removeFragment(eventsFragment);
             removeFragment(placesFragment);
             llSearch.setVisibility(View.GONE);
             this.setTitle("Logs");
+        } else if (id == R.id.nav_fare) {
+            removeFragment(placesFragment);
+            switchFragment(fareFragment);
+            llSearch.setVisibility(View.GONE);
+            this.setTitle("Fare");
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -518,5 +530,30 @@ public class MainActivity extends AppCompatActivity
 
         dialog.show();
 
+    }
+
+    public double calculationByDistance(LatLng StartP, LatLng EndP) {
+        int Radius = 6371;// radius of earth in Km
+        double lat1 = StartP.latitude;
+        double lat2 = EndP.latitude;
+        double lon1 = StartP.longitude;
+        double lon2 = EndP.longitude;
+        double dLat = Math.toRadians(lat2 - lat1);
+        double dLon = Math.toRadians(lon2 - lon1);
+        double a = Math.sin(dLat / 2) * Math.sin(dLat / 2)
+                + Math.cos(Math.toRadians(lat1))
+                * Math.cos(Math.toRadians(lat2)) * Math.sin(dLon / 2)
+                * Math.sin(dLon / 2);
+        double c = 2 * Math.asin(Math.sqrt(a));
+        double valueResult = Radius * c;
+        double km = valueResult / 1;
+        DecimalFormat newFormat = new DecimalFormat("####");
+        int kmInDec = Integer.valueOf(newFormat.format(km));
+        double meter = valueResult % 1000;
+        int meterInDec = Integer.valueOf(newFormat.format(meter));
+        Log.i("Radius Value", "" + valueResult + "   KM  " + kmInDec
+                + " Meter   " + meterInDec);
+
+        return Radius * c;
     }
 }
