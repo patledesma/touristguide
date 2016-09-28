@@ -39,7 +39,6 @@
                 android:shadowDx="30"
                 android:shadowDy="30"
                 android:maxLines="1"
-                android:imeOptions="actionSearch"
                 android:singleLine="true"/>
 
             <ImageButton

@@ -60,7 +60,7 @@ public class NavigateFragment extends Fragment implements
         View.OnClickListener,
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
-        LocationListener{
+        LocationListener {
 
     private ViewGroup view;
     private GoogleMap mMap;
@@ -210,11 +210,11 @@ public class NavigateFragment extends Fragment implements
 
                 Address address = addressList.get(0);
                 final LatLng latLng = new LatLng(address.getLatitude(), address.getLongitude());
-                MarkerOptions markerOptions = new MarkerOptions();
+                /*MarkerOptions markerOptions = new MarkerOptions();
                 markerOptions.position(latLng);
                 markerOptions.title("Current Position");
                 markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
-                mCurrLocationMarker = mMap.addMarker(markerOptions);
+                mCurrLocationMarker = mMap.addMarker(markerOptions);*/
                 url = getCurrentPlaceUrl(latLng.latitude, latLng.longitude);
                 dataTransfer = new Object[2];
                 dataTransfer[0] = mMap;
@@ -505,35 +505,20 @@ public class NavigateFragment extends Fragment implements
     }
 
     private void showFare(LatLng start, LatLng end) {
-        try {
-            double busFare, busAirFare, multicabFare, tricylcleFare;
-            double minKM = 5;
-            double distance;
+        double busFare, busAirFare, multicabFare, tricylcleFare;
+        double minKM = 5;
+        double distance;
 
-            Geocoder geocoder = new Geocoder(getActivity(), Locale.getDefault());
-            List<Address> addressesOrigin = geocoder.getFromLocation(start.latitude, start.longitude, 1);
-            String cityOrigin = addressesOrigin.get(0).getAddressLine(0);
+        distance = calculationByDistance(start, end);
 
-            List<Address> addressesDest = geocoder.getFromLocation(end.latitude, end.longitude, 1);
-            String cityDest = addressesDest.get(0).getAddressLine(0);
+        busFare = (bus * minKM) + ((distance - minKM) * 1.40);
+        busAirFare = (busAir * minKM) + ((distance - minKM) * 1.80);
+        multicabFare = (multicab * minKM) + ((distance - minKM) * 1.40);
+        tricylcleFare = (tricycle * minKM) + ((distance - minKM) * 1.40);
 
-            Log.e("NAVIGATEFRAGMENT", "!!!! " + cityOrigin + "|" + cityDest);
-
-            distance = calculationByDistance(start, end);
-            Log.e("NAVIGATE", "!!!!!! distance " + distance);
-
-            busFare = (bus * minKM) + ((distance - minKM) * 1.40);
-            busAirFare = (busAir * minKM) + ((distance - minKM) * 1.80);
-            multicabFare = (multicab * minKM) + ((distance - minKM) * 1.40);
-            tricylcleFare = (tricycle * minKM) + ((distance - minKM) * 1.40);
-
-            tBusFare.setText(String.format("%.2f PHP", busFare));
-            tBusAirconFare.setText(String.format("%.2f PHP", busAirFare));
-            tMulticabFare.setText(String.format("%.2f PHP", multicabFare));
-            tTricycleFare.setText(String.format("%.2f PHP", tricylcleFare));
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        tBusFare.setText(String.format("%.2f PHP", busFare));
+        tBusAirconFare.setText(String.format("%.2f PHP", busAirFare));
+        tMulticabFare.setText(String.format("%.2f PHP", multicabFare));
+        tTricycleFare.setText(String.format("%.2f PHP", tricylcleFare));
     }
 }
