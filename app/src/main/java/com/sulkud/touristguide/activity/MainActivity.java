@@ -27,7 +27,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -48,6 +47,7 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import com.sa90.materialarcmenu.ArcMenu;
 import com.sulkud.touristguide.R;
 import com.sulkud.touristguide.fragment.EventsFragment;
+import com.sulkud.touristguide.fragment.NavigateFragment;
 import com.sulkud.touristguide.fragment.PlacesFragment;
 import com.sulkud.touristguide.helper.DirectionsJSONParser;
 import com.sulkud.touristguide.helper.GetNearbyPlacesData;
@@ -75,7 +75,7 @@ public class MainActivity extends AppCompatActivity
         LocationListener {
 
     private GoogleMap mMap;
-    private Fragment eventsFragment, placesFragment;
+    private Fragment eventsFragment, placesFragment, navigationFragment;
 
     private ArcMenu arcMenu;
     private FloatingActionButton fabHospital, fabHotel, fabBank, fabRestaurant, fabTourist;
@@ -83,7 +83,7 @@ public class MainActivity extends AppCompatActivity
     private ActionBarDrawerToggle toggle;
     private Toolbar toolbar;
     private NavigationView navigationView;
-    private Button visitedPlaceBtn, bookmarkPlaceBtn, drawRouteBtn;
+    private Button visitedPlaceBtn, bookmarkPlaceBtn;
 
     private LinearLayout llSearch;
     private double latitude;
@@ -138,7 +138,6 @@ public class MainActivity extends AppCompatActivity
         fabTourist = (FloatingActionButton) findViewById(R.id.fabTourist);
         llSearch = (LinearLayout) findViewById(R.id.llSearch);
         bookmarkPlaceBtn = (Button) findViewById(R.id.bookmarkPlaceBtn);
-        drawRouteBtn = (Button) findViewById(R.id.drawRouteBtn);
         visitedPlaceBtn = (Button) findViewById(R.id.visitedPlaceBtn);
 
         fabHospital.setOnClickListener(this);
@@ -147,13 +146,14 @@ public class MainActivity extends AppCompatActivity
         fabRestaurant.setOnClickListener(this);
         fabTourist.setOnClickListener(this);
         bookmarkPlaceBtn.setOnClickListener(this);
-        drawRouteBtn.setOnClickListener(this);
         visitedPlaceBtn.setOnClickListener(this);
 
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         eventsFragment = new EventsFragment();
         placesFragment = new PlacesFragment();
+        navigationFragment = new NavigateFragment();
+
         dbHandler = new DatabaseHandler(this);
     }
 
@@ -224,21 +224,11 @@ public class MainActivity extends AppCompatActivity
             switchFragment(eventsFragment);
             llSearch.setVisibility(View.GONE);
             this.setTitle("Events");
-        } else if (id == R.id.nav_mark) {
-            removeFragment(eventsFragment); //temporary: just to remove fragments
-            removeFragment(placesFragment);
+        } else if (id == R.id.nav_navigate) {
+            removeFragment(eventsFragment);
+            switchFragment(navigationFragment);
             llSearch.setVisibility(View.GONE);
-            this.setTitle("Marked Places");
-        } else if (id == R.id.nav_share) {
-            removeFragment(eventsFragment); //temporary: just to remove fragments
-            removeFragment(placesFragment);
-            llSearch.setVisibility(View.GONE);
-            this.setTitle("Share");
-        } else if (id == R.id.nav_logs) {
-            removeFragment(eventsFragment); //temporary: just to remove fragments
-            removeFragment(placesFragment);
-            llSearch.setVisibility(View.GONE);
-            this.setTitle("Logs");
+            this.setTitle("Navigate");
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -262,7 +252,7 @@ public class MainActivity extends AppCompatActivity
             mMap.setMyLocationEnabled(true);
         }
 
-        mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+        /*mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
 
             @Override
             public void onMapClick(LatLng point) {
@@ -287,11 +277,10 @@ public class MainActivity extends AppCompatActivity
                 // Setting the position of the marker
                 options.position(point);
 
-                /**
+                *//**
                  * For the start location, the color of marker is GREEN and
                  * for the end location, the color of marker is RED and
-                 * for the rest of markers, the color is AZURE
-                 */
+                 *//*
                 if (markerPoints.size() == 1) {
                     options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
                 } else if (markerPoints.size() == 2) {
@@ -316,9 +305,9 @@ public class MainActivity extends AppCompatActivity
                 // Removes all the points in the ArrayList
                 markerPoints.clear();
             }
-        });
+        });*/
 
-        // Click event handler for Button btn_draw
+        /*// Click event handler for Button btn_draw
         drawRouteBtn.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -337,7 +326,7 @@ public class MainActivity extends AppCompatActivity
                     downloadTask.execute(url);
                 }
             }
-        });
+        });*/
     }
 
     public void onMapSearch(View view) {

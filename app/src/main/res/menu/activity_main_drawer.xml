@@ -15,22 +15,9 @@
             android:icon="@drawable/icon_events"
             android:title="@string/events" />
         <item
-            android:id="@+id/nav_mark"
-            android:icon="@drawable/icon_mark"
-            android:title="@string/mark" />
+            android:id="@+id/nav_navigate"
+            android:icon="@drawable/icon_navigate"
+            android:title="@string/navigate" />
     </group>
-
-    <item android:title="@string/communicate">
-        <menu>
-            <item
-                android:id="@+id/nav_share"
-                android:icon="@drawable/icon_share"
-                android:title="@string/share" />
-            <item
-                android:id="@+id/nav_logs"
-                android:icon="@drawable/icon_logs"
-                android:title="@string/logs" />
-        </menu>
-    </item>
 
 </menu>
