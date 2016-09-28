@@ -3,14 +3,12 @@ package com.sulkud.touristguide.fragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -23,7 +21,6 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.sulkud.touristguide.R;
 import com.sulkud.touristguide.interfaces.PlaceSelectedListener;
-import com.sulkud.touristguide.models.PlaceModel;
 
 import java.util.ArrayList;
 import java.util.List;

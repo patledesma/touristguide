@@ -27,7 +27,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -52,7 +51,6 @@ import com.sulkud.touristguide.fragment.PlacesFragment;
 import com.sulkud.touristguide.helper.DirectionsJSONParser;
 import com.sulkud.touristguide.helper.GetNearbyPlacesData;
 import com.sulkud.touristguide.helper.database.DatabaseHandler;
-import com.sulkud.touristguide.models.PlaceModel;
 
 import org.json.JSONObject;
 

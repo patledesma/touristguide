@@ -11,15 +11,9 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.sulkud.touristguide.R;
-import com.sulkud.touristguide.adapter.EventsAdapter;
 import com.sulkud.touristguide.adapter.PlacesListAdapter;
 import com.sulkud.touristguide.helper.database.DatabaseHandler;
 import com.sulkud.touristguide.interfaces.PlaceSelectedListener;
-import com.sulkud.touristguide.models.PlaceModel;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
 
 public class BookmarkedPlacesFragment extends Fragment implements AdapterView.OnItemClickListener {
 
