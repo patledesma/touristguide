@@ -239,7 +239,6 @@ public class MainActivity extends AppCompatActivity
                                 mCurrLocationMarker.getPosition().latitude + "," +
                                 mCurrLocationMarker.getPosition().longitude + ",20z"))
                         .build();
-
                 facebookShareDialog.show(linkContent);
             }
             return true;
@@ -634,7 +633,7 @@ public class MainActivity extends AppCompatActivity
         LatLng latLng = new LatLng(latitude, longitude);
         MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.position(latLng);
-        markerOptions.title("Current Position");
+        markerOptions.title("Tacurong City");
         markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
         mCurrLocationMarker = mMap.addMarker(markerOptions);
 
