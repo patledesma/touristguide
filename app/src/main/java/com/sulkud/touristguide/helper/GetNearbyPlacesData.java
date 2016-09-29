@@ -170,12 +170,12 @@ public class GetNearbyPlacesData extends AsyncTask<Object, String, String> {
         entry.put("lng", "124.054569");
         attractions.add(entry);
 
-        entry = new HashMap<>();
+        /*entry = new HashMap<>();
         entry.put("vicinity", "Sultan Kudarat");
         entry.put("place_name", "Balut Island of Kalamansig");
         entry.put("lat", "5.3982258");
         entry.put("lng", "125.3760378");
-        attractions.add(entry);
+        attractions.add(entry);*/
 
         return attractions;
     }
