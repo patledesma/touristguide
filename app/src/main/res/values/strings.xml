@@ -40,6 +40,22 @@
         <item>Inugyunay (Tacurong City)</item>
     </string-array>
 
+    <string-array name="events_description">
+        <item>Description for Bansadayaw</item>
+        <item>Description for Kastifun</item>
+        <item>Description for Hinabyog</item>
+        <item>Description for Pasundayag</item>
+        <item>Description for Salagaan</item>
+        <item>Description for Timpuyog</item>
+        <item>Description for Hinugyaw</item>
+        <item>Description for Kanduli</item>
+        <item>Description for Kaiilang</item>
+        <item>Description for Sambuyawan</item>
+        <item>Description for Sulok</item>
+        <item>Description for Talakudong</item>
+        <item>Description for Inugyunay</item>
+    </string-array>
+
     <string-array name="dates">
         <item>September 10</item>
         <item>August 6</item>
