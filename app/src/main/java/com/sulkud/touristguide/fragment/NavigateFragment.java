@@ -74,7 +74,7 @@ public class NavigateFragment extends Fragment implements
     private Button drawRouteBtn;
     private LocationRequest mLocationRequest;
 
-    private double bus = 15, busAir = 20, multicab = 20, tricycle = 20;
+    private double baseFare = 9;
     private TextView tBusAirconFare, tBusFare, tMulticabFare, tTricycleFare;
 
     @Nullable
@@ -479,42 +479,32 @@ public class NavigateFragment extends Fragment implements
         return data;
     }
 
-    public double calculationByDistance(LatLng StartP, LatLng EndP) {
-        int Radius = 6371;// radius of earth in Km
-        double lat1 = StartP.latitude;
-        double lat2 = EndP.latitude;
-        double lon1 = StartP.longitude;
-        double lon2 = EndP.longitude;
-        double dLat = Math.toRadians(lat2 - lat1);
-        double dLon = Math.toRadians(lon2 - lon1);
-        double a = Math.sin(dLat / 2) * Math.sin(dLat / 2)
-                + Math.cos(Math.toRadians(lat1))
-                * Math.cos(Math.toRadians(lat2)) * Math.sin(dLon / 2)
-                * Math.sin(dLon / 2);
-        double c = 2 * Math.asin(Math.sqrt(a));
-        double valueResult = Radius * c;
-        double km = valueResult / 1;
-        DecimalFormat newFormat = new DecimalFormat("####");
-        int kmInDec = Integer.valueOf(newFormat.format(km));
-        double meter = valueResult % 1000;
-        int meterInDec = Integer.valueOf(newFormat.format(meter));
-        Log.i("Radius Value", "" + valueResult + "   KM  " + kmInDec
-                + " Meter   " + meterInDec);
+    public float[] calculationByDistance(LatLng StartP, LatLng EndP) {
+        float[] results = new float[1];
+        Location.distanceBetween(StartP.latitude, StartP.longitude,
+                EndP.latitude, EndP.longitude,
+                results);
 
-        return Radius * c;
+        return results;
     }
 
     private void showFare(LatLng start, LatLng end) {
         double busFare, busAirFare, multicabFare, tricylcleFare;
         double minKM = 5;
-        double distance;
+        float distance;
 
-        distance = calculationByDistance(start, end);
+        distance = calculationByDistance(start, end)[0] / 1000;
 
-        busFare = (bus * minKM) + ((distance - minKM) * 1.40);
-        busAirFare = (busAir * minKM) + ((distance - minKM) * 1.80);
-        multicabFare = (multicab * minKM) + ((distance - minKM) * 1.40);
-        tricylcleFare = (tricycle * minKM) + ((distance - minKM) * 1.40);
+        if (distance < 5) {
+            Log.e("navigate", "!!! less than 5 :" + distance);
+            busFare = busAirFare = multicabFare = tricylcleFare = 9;
+        } else {
+            Log.e("navigate", "!!! greater than 5 :" + distance);
+            busFare = (baseFare * minKM) + ((distance - minKM) * 1.40);
+            busAirFare = (baseFare * minKM) + ((distance - minKM) * 1.80);
+            multicabFare = (baseFare * minKM) + ((distance - minKM) * 1.40);
+            tricylcleFare = (baseFare * minKM) + ((distance - minKM) * 1.40);
+        }
 
         tBusFare.setText(String.format("%.2f PHP", busFare));
         tBusAirconFare.setText(String.format("%.2f PHP", busAirFare));

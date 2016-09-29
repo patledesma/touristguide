@@ -5,9 +5,9 @@
     android:orientation="vertical">
 
     <TextView
+        android:id="@+id/tTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="History"
         android:textColor="@color/white"
         android:textSize="25sp"
         android:textStyle="bold"
@@ -15,12 +15,10 @@
         android:padding="20dp"/>
 
     <TextView
-        android:id="@+id/tHistory"
+        android:id="@+id/tContent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="18sp"
-        android:text="@string/history"
-        android:textAlignment="center"
         android:padding="20dp"/>
 
     <Button

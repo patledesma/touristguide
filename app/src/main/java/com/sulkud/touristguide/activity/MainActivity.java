@@ -22,21 +22,19 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
-import com.facebook.GraphRequest;
-import com.facebook.GraphResponse;
-import com.facebook.HttpMethod;
 import com.facebook.share.Sharer;
 import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.widget.ShareDialog;
@@ -76,6 +74,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.zip.Inflater;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
@@ -96,7 +95,7 @@ public class MainActivity extends AppCompatActivity
     private NavigationView navigationView;
     private Button visitedPlaceBtn, bookmarkPlaceBtn;
 
-    private LinearLayout llSearch;
+    private LinearLayout llSearch, llButtons;
     private double latitude;
     private double longitude;
     private int PROXIMITY_RADIUS = 10000;
@@ -145,13 +144,14 @@ public class MainActivity extends AppCompatActivity
         toggle.syncState();
 
         arcMenu = (ArcMenu) findViewById(R.id.arcMenu);
-        arcMenu.setRadius(600f);
+        arcMenu.setRadius(200f); //change value which ever fits your screen
         fabHospital = (FloatingActionButton) findViewById(R.id.fabHospital);
         fabHotel = (FloatingActionButton) findViewById(R.id.fabHotel);
         fabBank = (FloatingActionButton) findViewById(R.id.fabBank);
         fabRestaurant = (FloatingActionButton) findViewById(R.id.fabRestaurant);
         fabTourist = (FloatingActionButton) findViewById(R.id.fabTourist);
         llSearch = (LinearLayout) findViewById(R.id.llSearch);
+        llButtons = (LinearLayout) findViewById(R.id.llSearch);
         bookmarkPlaceBtn = (Button) findViewById(R.id.bookmarkPlaceBtn);
         visitedPlaceBtn = (Button) findViewById(R.id.visitedPlaceBtn);
 
@@ -261,23 +261,27 @@ public class MainActivity extends AppCompatActivity
             removeFragment(placesFragment);
             removeFragment(navigationFragment);
             llSearch.setVisibility(View.VISIBLE);
+            llButtons.setVisibility(View.VISIBLE);
             this.setTitle("Maps");
         } else if (id == R.id.nav_visited_places) {
             removeFragment(eventsFragment);
             removeFragment(navigationFragment);
             switchFragment(placesFragment);
             llSearch.setVisibility(View.GONE);
+            llButtons.setVisibility(View.GONE);
         } else if (id == R.id.nav_events) {
             removeFragment(placesFragment);
             removeFragment(navigationFragment);
             switchFragment(eventsFragment);
             llSearch.setVisibility(View.GONE);
+            llButtons.setVisibility(View.GONE);
             this.setTitle("Events");
         } else if (id == R.id.nav_navigate) {
             removeFragment(eventsFragment);
             removeFragment(placesFragment);
             switchFragment(navigationFragment);
             llSearch.setVisibility(View.GONE);
+            llButtons.setVisibility(View.GONE);
             this.setTitle("Navigate");
         }
 
@@ -611,8 +615,16 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void showHistory(View v) {
+        LayoutInflater inflater = this.getLayoutInflater();
+        View view = inflater.inflate(R.layout.dialog_history, null);
+        TextView tTitle = (TextView) view.findViewById(R.id.tTitle);
+        TextView tContent = (TextView) view.findViewById(R.id.tContent);
+
+        tTitle.setText("HISTORY");
+        tContent.setText(R.string.history);
+
         final Dialog dialog = new Dialog(MainActivity.this);
-        dialog.setContentView(R.layout.dialog_history);
+        dialog.setContentView(view);
 
         Button dialogButton = (Button) dialog.findViewById(R.id.bDismiss);
         // if button is clicked, close the custom dialog
