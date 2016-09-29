@@ -219,7 +219,7 @@ public class NavigateFragment extends Fragment implements
                 dataTransfer = new Object[2];
                 dataTransfer[0] = mMap;
                 dataTransfer[1] = url;
-                getNearbyPlacesData = new GetNearbyPlacesData();
+                getNearbyPlacesData = new GetNearbyPlacesData("map_search");
                 getNearbyPlacesData.setResultListener(new GetNearbyPlacesData.ResultListener() {
                     @Override
                     public void onFinishRequest(List<HashMap<String, String>> place) {

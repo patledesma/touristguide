@@ -327,7 +327,7 @@ public class MainActivity extends AppCompatActivity
                 dataTransfer = new Object[2];
                 dataTransfer[0] = mMap;
                 dataTransfer[1] = url;
-                getNearbyPlacesData = new GetNearbyPlacesData();
+                getNearbyPlacesData = new GetNearbyPlacesData("map_search");
                 getNearbyPlacesData.setResultListener(new GetNearbyPlacesData.ResultListener() {
                     @Override
                     public void onFinishRequest(List<HashMap<String, String>> place) {
@@ -373,7 +373,7 @@ public class MainActivity extends AppCompatActivity
                 dataTransfer[0] = mMap;
                 dataTransfer[1] = url;
                 Log.d("onClick", url);
-                getNearbyPlacesData = new GetNearbyPlacesData();
+                getNearbyPlacesData = new GetNearbyPlacesData("hospital");
                 getNearbyPlacesData.execute(dataTransfer);
                 Toast.makeText(MainActivity.this, "Nearby Hospitals", Toast.LENGTH_LONG).show();
                 break;
@@ -386,7 +386,7 @@ public class MainActivity extends AppCompatActivity
                 dataTransfer[0] = mMap;
                 dataTransfer[1] = url;
                 Log.d("onClick", url);
-                getNearbyPlacesData = new GetNearbyPlacesData();
+                getNearbyPlacesData = new GetNearbyPlacesData("hotel");
                 getNearbyPlacesData.execute(dataTransfer);
                 Toast.makeText(MainActivity.this, "Nearby Hotels", Toast.LENGTH_LONG).show();
                 break;
@@ -399,7 +399,7 @@ public class MainActivity extends AppCompatActivity
                 dataTransfer[0] = mMap;
                 dataTransfer[1] = url;
                 Log.d("onClick", url);
-                getNearbyPlacesData = new GetNearbyPlacesData();
+                getNearbyPlacesData = new GetNearbyPlacesData("bank");
                 getNearbyPlacesData.execute(dataTransfer);
                 Toast.makeText(MainActivity.this, "Nearby Banks", Toast.LENGTH_LONG).show();
                 break;
@@ -412,7 +412,7 @@ public class MainActivity extends AppCompatActivity
                 dataTransfer[0] = mMap;
                 dataTransfer[1] = url;
                 Log.d("onClick", url);
-                getNearbyPlacesData = new GetNearbyPlacesData();
+                getNearbyPlacesData = new GetNearbyPlacesData("restaurant");
                 getNearbyPlacesData.execute(dataTransfer);
                 Toast.makeText(MainActivity.this, "Nearby Restaurants", Toast.LENGTH_LONG).show();
                 break;
@@ -425,7 +425,7 @@ public class MainActivity extends AppCompatActivity
                 dataTransfer[0] = mMap;
                 dataTransfer[1] = url;
                 Log.d("onClick", url);
-                getNearbyPlacesData = new GetNearbyPlacesData();
+                getNearbyPlacesData = new GetNearbyPlacesData("poi.attraction");
                 getNearbyPlacesData.execute(dataTransfer);
                 Toast.makeText(MainActivity.this, "Nearby Tourist Attractions", Toast.LENGTH_LONG).show();
                 break;
