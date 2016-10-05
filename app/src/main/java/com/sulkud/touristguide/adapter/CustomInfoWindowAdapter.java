@@ -15,8 +15,10 @@ import com.sulkud.touristguide.R;
 public class CustomInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
 
     private final View myContentsView;
+    private Context context;
 
     public CustomInfoWindowAdapter(Context context) {
+        this.context = context;
         myContentsView = LayoutInflater.from(context).inflate(R.layout.view_info_window, null);
     }
 
@@ -29,7 +31,9 @@ public class CustomInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
     public View getInfoContents(Marker marker) {
         ImageView iImage = ((ImageView) myContentsView.findViewById(R.id.iImage));
         String bitmap = (String)marker.getTag();
+        int id = context.getResources().getIdentifier("com.sulkud.touristguide:drawable/" + (String)marker.getTag(), null, null);
         Log.i(getClass().getSimpleName(), "Bitmap: " + (String)marker.getTag());
+        iImage.setImageResource(id);
         TextView tvTitle = ((TextView) myContentsView.findViewById(R.id.title));
         tvTitle.setText(marker.getTitle());
         Log.i(getClass().getSimpleName(), "Title: " + marker.getTitle());

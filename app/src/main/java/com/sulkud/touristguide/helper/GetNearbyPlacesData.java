@@ -107,7 +107,7 @@ public class GetNearbyPlacesData extends AsyncTask<Object, String, String> {
         entry.put("place_name", "Pangadilan Water Falls of Columbio");
         entry.put("lat", "6.635625");
         entry.put("lng", "125.083734");
-        entry.put("bitmap", "");
+        entry.put("bitmap", "columbio");
         attractions.add(entry);
 
         entry = new HashMap<>();
@@ -115,7 +115,7 @@ public class GetNearbyPlacesData extends AsyncTask<Object, String, String> {
         entry.put("place_name", "Palm Oil of Isulan");
         entry.put("lat", "6.6709587");
         entry.put("lng", "124.6319103");
-        entry.put("bitmap", "");
+        entry.put("bitmap", "isulan");
         attractions.add(entry);
 
         entry = new HashMap<>();
@@ -123,7 +123,7 @@ public class GetNearbyPlacesData extends AsyncTask<Object, String, String> {
         entry.put("place_name", "Banana Plantation of Lambayong");
         entry.put("lat", "6.800257");
         entry.put("lng", "124.633704");
-        entry.put("bitmap", "");
+        entry.put("bitmap", "lambayong");
         attractions.add(entry);
 
         entry = new HashMap<>();
@@ -131,7 +131,7 @@ public class GetNearbyPlacesData extends AsyncTask<Object, String, String> {
         entry.put("place_name", "Rajahbuayan Convention Center of Lutayan");
         entry.put("lat", "6.6083016");
         entry.put("lng", "124.8412112");
-        entry.put("bitmap", "");
+        entry.put("bitmap", "lutayan");
         attractions.add(entry);
 
         entry = new HashMap<>();
@@ -139,7 +139,7 @@ public class GetNearbyPlacesData extends AsyncTask<Object, String, String> {
         entry.put("place_name", "Muscovado of President Quirino");
         entry.put("lat", "6.701257");
         entry.put("lng", "124.743017");
-        entry.put("bitmap", "");
+        entry.put("bitmap", "presquirino");
         attractions.add(entry);
 
         entry = new HashMap<>();
@@ -147,7 +147,7 @@ public class GetNearbyPlacesData extends AsyncTask<Object, String, String> {
         entry.put("place_name", "Birds Sanctuary of Tacurong City");
         entry.put("lat", "6.628550");
         entry.put("lng", "124.638005");
-        entry.put("bitmap", "");
+        entry.put("bitmap", "tacurong");
         attractions.add(entry);
 
         entry = new HashMap<>();
@@ -155,7 +155,7 @@ public class GetNearbyPlacesData extends AsyncTask<Object, String, String> {
         entry.put("place_name", "Lagbasan Cave of Senator Ninoy Aquino");
         entry.put("lat", "6.384193");
         entry.put("lng", "124.354145");
-        entry.put("bitmap", "");
+        entry.put("bitmap", "senator_ninoy_aquino");
         attractions.add(entry);
 
         entry = new HashMap<>();
@@ -163,7 +163,7 @@ public class GetNearbyPlacesData extends AsyncTask<Object, String, String> {
         entry.put("place_name", "Bamban Falls of Bagumbayan");
         entry.put("lat", "6.4568242");
         entry.put("lng", "124.5454731");
-        entry.put("bitmap", "");
+        entry.put("bitmap", "columbio");
         attractions.add(entry);
 
         entry = new HashMap<>();
@@ -171,7 +171,7 @@ public class GetNearbyPlacesData extends AsyncTask<Object, String, String> {
         entry.put("place_name", "Hot and Cold Spring of Esperanza");
         entry.put("lat", "6.693618");
         entry.put("lng", "124.550148");
-        entry.put("bitmap", "");
+        entry.put("bitmap", "esperanza");
         attractions.add(entry);
 
         entry = new HashMap<>();
@@ -179,7 +179,7 @@ public class GetNearbyPlacesData extends AsyncTask<Object, String, String> {
         entry.put("place_name", "Tuna Bay of Palimbang");
         entry.put("lat", "6.211846");
         entry.put("lng", "124.189563");
-        entry.put("bitmap", "");
+        entry.put("bitmap", "palimbang");
         attractions.add(entry);
 
         entry = new HashMap<>();
@@ -187,7 +187,7 @@ public class GetNearbyPlacesData extends AsyncTask<Object, String, String> {
         entry.put("place_name", "Mangroves of Lebak");
         entry.put("lat", "6.629472");
         entry.put("lng", "124.054569");
-        entry.put("bitmap", "");
+        entry.put("bitmap", "lebak");
         attractions.add(entry);
 
         /*entry = new HashMap<>();
