@@ -20,6 +20,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.sulkud.touristguide.R;
+import com.sulkud.touristguide.adapter.CustomInfoWindowAdapter;
 import com.sulkud.touristguide.interfaces.PlaceSelectedListener;
 import com.sulkud.touristguide.models.PlaceModel;
 
@@ -107,8 +108,13 @@ public class PlacesFragment extends Fragment
                             new LatLng(
                                     Double.valueOf(placeModel.latitude),
                                     Double.valueOf(placeModel.longitude))
-                    );
+                    )
+                    .title(placeModel.placeName)
+                    .snippet(placeModel.latitude + ", " + placeModel.longitude);
             mMap.clear();
+
+            mMap.setInfoWindowAdapter(new CustomInfoWindowAdapter(getActivity()));
+
             Marker marker = mMap.addMarker(options);
             marker.setPosition(new LatLng(
                     Double.valueOf(placeModel.latitude),

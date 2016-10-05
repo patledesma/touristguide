@@ -55,6 +55,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.sa90.materialarcmenu.ArcMenu;
 import com.sulkud.touristguide.R;
+import com.sulkud.touristguide.adapter.CustomInfoWindowAdapter;
 import com.sulkud.touristguide.fragment.EventsFragment;
 import com.sulkud.touristguide.fragment.NavigateFragment;
 import com.sulkud.touristguide.fragment.PlacesFragment;
@@ -82,6 +83,7 @@ public class MainActivity extends AppCompatActivity
         View.OnClickListener,
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
+        GoogleMap.OnMarkerClickListener,
         LocationListener {
 
     private GoogleMap mMap;
@@ -327,7 +329,7 @@ public class MainActivity extends AppCompatActivity
                 dataTransfer = new Object[2];
                 dataTransfer[0] = mMap;
                 dataTransfer[1] = url;
-                getNearbyPlacesData = new GetNearbyPlacesData("map_search");
+                getNearbyPlacesData = new GetNearbyPlacesData(this, "map_search");
                 getNearbyPlacesData.setResultListener(new GetNearbyPlacesData.ResultListener() {
                     @Override
                     public void onFinishRequest(List<HashMap<String, String>> place) {
@@ -373,7 +375,7 @@ public class MainActivity extends AppCompatActivity
                 dataTransfer[0] = mMap;
                 dataTransfer[1] = url;
                 Log.d("onClick", url);
-                getNearbyPlacesData = new GetNearbyPlacesData("hospital");
+                getNearbyPlacesData = new GetNearbyPlacesData(this, "hospital");
                 getNearbyPlacesData.execute(dataTransfer);
                 Toast.makeText(MainActivity.this, "Nearby Hospitals", Toast.LENGTH_LONG).show();
                 break;
@@ -386,7 +388,7 @@ public class MainActivity extends AppCompatActivity
                 dataTransfer[0] = mMap;
                 dataTransfer[1] = url;
                 Log.d("onClick", url);
-                getNearbyPlacesData = new GetNearbyPlacesData("hotel");
+                getNearbyPlacesData = new GetNearbyPlacesData(this, "hotel");
                 getNearbyPlacesData.execute(dataTransfer);
                 Toast.makeText(MainActivity.this, "Nearby Hotels", Toast.LENGTH_LONG).show();
                 break;
@@ -399,7 +401,7 @@ public class MainActivity extends AppCompatActivity
                 dataTransfer[0] = mMap;
                 dataTransfer[1] = url;
                 Log.d("onClick", url);
-                getNearbyPlacesData = new GetNearbyPlacesData("bank");
+                getNearbyPlacesData = new GetNearbyPlacesData(this, "bank");
                 getNearbyPlacesData.execute(dataTransfer);
                 Toast.makeText(MainActivity.this, "Nearby Banks", Toast.LENGTH_LONG).show();
                 break;
@@ -412,7 +414,7 @@ public class MainActivity extends AppCompatActivity
                 dataTransfer[0] = mMap;
                 dataTransfer[1] = url;
                 Log.d("onClick", url);
-                getNearbyPlacesData = new GetNearbyPlacesData("restaurant");
+                getNearbyPlacesData = new GetNearbyPlacesData(this, "restaurant");
                 getNearbyPlacesData.execute(dataTransfer);
                 Toast.makeText(MainActivity.this, "Nearby Restaurants", Toast.LENGTH_LONG).show();
                 break;
@@ -425,7 +427,7 @@ public class MainActivity extends AppCompatActivity
                 dataTransfer[0] = mMap;
                 dataTransfer[1] = url;
                 Log.d("onClick", url);
-                getNearbyPlacesData = new GetNearbyPlacesData("poi.attraction");
+                getNearbyPlacesData = new GetNearbyPlacesData(this, "poi.attraction");
                 getNearbyPlacesData.execute(dataTransfer);
                 Toast.makeText(MainActivity.this, "Nearby Tourist Attractions", Toast.LENGTH_LONG).show();
                 break;
@@ -559,7 +561,7 @@ public class MainActivity extends AppCompatActivity
         markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
         mCurrLocationMarker = mMap.addMarker(markerOptions);
 
-        //move map camera
+        mMap.setInfoWindowAdapter(new CustomInfoWindowAdapter(this));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
         mMap.animateCamera(CameraUpdateFactory.zoomTo(11));
         Toast.makeText(MainActivity.this, "Your Current Location", Toast.LENGTH_LONG).show();
@@ -711,6 +713,12 @@ public class MainActivity extends AppCompatActivity
             urlConnection.disconnect();
         }
         return data;
+    }
+
+    @Override
+    public boolean onMarkerClick(Marker marker) {
+
+        return false;
     }
 
     private class DownloadTask extends AsyncTask<String, Void, String> {
