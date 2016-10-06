@@ -263,10 +263,10 @@ public class NavigateFragment extends Fragment implements
         }
 
         //Place current location marker
-//        latitude = location.getLatitude();
-        latitude = 6.687227;
-//        longitude = location.getLongitude();
-        longitude = 124.676925;
+        latitude = location.getLatitude();
+//        latitude = 6.687227;
+        longitude = location.getLongitude();
+//        longitude = 124.676925;
 //        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
         LatLng latLng = new LatLng(latitude, longitude);
         MarkerOptions markerOptions = new MarkerOptions();
