@@ -27,4 +27,5 @@ dependencies {
     compile 'com.google.android.gms:play-services-location:9.4.0'
     compile 'com.sa90.materialarcmenu:library:1.4'
     compile 'com.facebook.android:facebook-android-sdk:4.+'
+    compile 'com.google.code.gson:gson:2.7'
 }
