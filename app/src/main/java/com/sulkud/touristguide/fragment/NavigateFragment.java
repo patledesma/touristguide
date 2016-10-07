@@ -82,6 +82,7 @@ public class NavigateFragment extends Fragment implements
     private LocationRequest mLocationRequest;
 
     public static LatLng toTouristDestination;
+    public static boolean startToTouristDestination = false;
 
     private double baseFare = 9;
     private TextView tBusAirconFare, tBusFare, tMulticabFare, tTricycleFare, tDistance, tDuration;
@@ -327,7 +328,7 @@ public class NavigateFragment extends Fragment implements
 
         //this is when we have a guest location to travel
         //ESP tourist spots
-        if (toTouristDestination != null) {
+        if (toTouristDestination != null && startToTouristDestination) {
             Log.e(getClass().getSimpleName(), "toTouristDestination is not null");
             if (markerPoints != null) {
                 markerPoints.clear();

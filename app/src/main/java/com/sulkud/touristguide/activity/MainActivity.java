@@ -447,6 +447,7 @@ public class MainActivity extends AppCompatActivity
                         //i need to trigger this to infalte NavigationFragment and set tourist destination
                         if (navigationFragment != null) {
                             NavigateFragment.toTouristDestination = latLng;
+                            NavigateFragment.startToTouristDestination = goNavigate;
                             arcMenu.setVisibility(View.GONE);
                             removeFragment(eventsFragment);
                             removeFragment(placesFragment);
