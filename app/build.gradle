@@ -28,4 +28,5 @@ dependencies {
     compile 'com.sa90.materialarcmenu:library:1.4'
     compile 'com.facebook.android:facebook-android-sdk:4.+'
     compile 'com.google.code.gson:gson:2.7'
+    compile 'org.apache.directory.studio:org.apache.commons.lang:2.6'
 }

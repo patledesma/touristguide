@@ -38,8 +38,10 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.sulkud.touristguide.R;
+import com.sulkud.touristguide.helper.AsyncRouteRequest;
 import com.sulkud.touristguide.helper.DirectionsJSONParser;
 import com.sulkud.touristguide.helper.GetNearbyPlacesData;
+import com.sulkud.touristguide.models.RouteModel;
 
 import org.json.JSONObject;
 

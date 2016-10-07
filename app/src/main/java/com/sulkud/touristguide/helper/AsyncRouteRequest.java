@@ -3,11 +3,14 @@ package com.sulkud.touristguide.helper;
 import android.content.Context;
 import android.os.AsyncTask;
 
+import com.google.gson.Gson;
 import com.sulkud.touristguide.R;
 import com.sulkud.touristguide.models.RouteModel;
 
+import java.io.IOException;
 
-public abstract class AsyncRouteRequest extends AsyncTask<Void, Void, Object> {
+
+public abstract class AsyncRouteRequest extends AsyncTask<Void, Void, RouteModel> {
 
     public static final String UNIT_METRIC = "metric";
     public static final String UNIT_IMPERIAL = "imperial";
@@ -29,18 +32,22 @@ public abstract class AsyncRouteRequest extends AsyncTask<Void, Void, Object> {
     }
 
     @Override
-    protected void onPreExecute() {
-        super.onPreExecute();
-    }
+    protected RouteModel doInBackground(Void... params) {
+        try {
+            DownloadUrl downloadUrl = new DownloadUrl();
+            String routeRequestResult = downloadUrl.readUrl(GOOGLE_DISTANCE_MATRIX_API);
+            return (new Gson()).fromJson(routeRequestResult, RouteModel.class);
 
-    @Override
-    protected void onPostExecute(Object o) {
-        super.onPostExecute(o);
-    }
-
-    @Override
-    protected Object doInBackground(Void... params) {
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return null;
+    }
+
+    @Override
+    protected void onPostExecute(RouteModel routeModel) {
+        super.onPostExecute(routeModel);
+        onRouteRequestResult(routeModel);
     }
 
     public abstract void onRouteRequestResult(RouteModel model);
