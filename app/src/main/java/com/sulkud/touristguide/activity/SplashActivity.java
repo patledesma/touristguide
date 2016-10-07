@@ -24,8 +24,8 @@ public class SplashActivity extends AppCompatActivity {
 
         progressFg = (ProgressBar) findViewById(R.id.circular_progress_fg);
 
-        ObjectAnimator progressAnimator = ObjectAnimator.ofInt(progressFg, "progress", 0, 500);
-        progressAnimator.setDuration(5000);
+        ObjectAnimator progressAnimator = ObjectAnimator.ofInt(progressFg, "progress", 0, 1000);
+        progressAnimator.setDuration(2000);
         progressAnimator.setInterpolator(new LinearInterpolator());
         progressAnimator.addListener(new Animator.AnimatorListener() {
             @Override

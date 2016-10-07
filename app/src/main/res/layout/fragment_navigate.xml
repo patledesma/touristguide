@@ -204,10 +204,11 @@
 
                 <TextView
                     android:id="@+id/tDistance"
-                    android:layout_width="wrap_content"
-                    android:layout_height="0dp"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:paddingLeft="20dp"
+                    android:gravity="center_vertical|center_horizontal"
                     android:textSize="18sp" />
 
             </LinearLayout>
@@ -233,10 +234,11 @@
 
                 <TextView
                     android:id="@+id/tDuration"
-                    android:layout_width="wrap_content"
-                    android:layout_height="0dp"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:paddingLeft="20dp"
+                    android:gravity="center_vertical|center_horizontal"
                     android:textSize="18sp" />
 
             </LinearLayout>

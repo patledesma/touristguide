@@ -32,6 +32,12 @@ public abstract class AsyncRouteRequest extends AsyncTask<Void, Void, RouteModel
     }
 
     @Override
+    protected void onPreExecute() {
+        super.onPreExecute();
+        onQueryingGoogleMatrixAPI();
+    }
+
+    @Override
     protected RouteModel doInBackground(Void... params) {
         try {
             DownloadUrl downloadUrl = new DownloadUrl();
@@ -51,4 +57,6 @@ public abstract class AsyncRouteRequest extends AsyncTask<Void, Void, RouteModel
     }
 
     public abstract void onRouteRequestResult(RouteModel model);
+
+    public abstract void onQueryingGoogleMatrixAPI();
 }

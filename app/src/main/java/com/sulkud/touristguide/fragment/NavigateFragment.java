@@ -98,6 +98,7 @@ public class NavigateFragment extends Fragment implements
         bSearch.setOnClickListener(this);
 
         drawRouteBtn = (Button) view.findViewById(R.id.drawRouteBtn);
+        drawRouteBtn.setOnClickListener(this);
 
         tBusAirconFare = (TextView) view.findViewById(R.id.tBusAirconFare);
         tBusFare = (TextView) view.findViewById(R.id.tBusFare);
@@ -123,13 +124,14 @@ public class NavigateFragment extends Fragment implements
             mMap.setMyLocationEnabled(true);
         }
 
-        /*mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+        mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
             public void onMapClick(LatLng point) {
                 Log.e("NAVIGATION", "onmapclick : " + markerPoints.size());
                 if (markerPoints.size() == 0 || markerPoints.size() == 2) {
                     mMap.clear();
                     markerPoints.clear();
+                    drawRouteBtn.setVisibility(View.GONE);
                 }
 
                 if (markerPoints.size() > 2) {
@@ -153,6 +155,7 @@ public class NavigateFragment extends Fragment implements
 
                 // Add new marker to the Google Map Android API V2
                 mMap.addMarker(options);
+                drawRouteBtn.setVisibility(View.VISIBLE);
             }
         });
 
@@ -165,8 +168,16 @@ public class NavigateFragment extends Fragment implements
 
                 // Removes all the points in the ArrayList
                 markerPoints.clear();
+                drawRouteBtn.setVisibility(View.GONE);
+                tBusFare.setText("");
+                tBusAirconFare.setText("");
+                tMulticabFare.setText("");
+                tTricycleFare.setText("");
+                tDistance.setText("");
+                tDuration.setText("");
+
             }
-        });*/
+        });
     }
 
     private void showRoute() {
@@ -178,6 +189,23 @@ public class NavigateFragment extends Fragment implements
             String url = getDirectionsUrl(origin, dest);
 
             showFare(origin, dest);
+
+            AsyncRouteRequest asyncRouteRequest = new AsyncRouteRequest(getActivity(),
+                    AsyncRouteRequest.UNIT_METRIC,
+                    origin.latitude + "," + origin.longitude,
+                    dest.latitude + "," + dest.longitude) {
+                @Override
+                public void onRouteRequestResult(RouteModel model) {
+                    tDistance.setText(model.rows.get(0).elements.get(0).distance.text);
+                    tDuration.setText(model.rows.get(0).elements.get(0).duration.text);
+                }
+
+                @Override
+                public void onQueryingGoogleMatrixAPI() {
+                    Log.i(getClass().getSimpleName(), "getting estimates from google API");
+                }
+            };
+            asyncRouteRequest.executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
 
             DownloadTask downloadTask = new DownloadTask();
 
@@ -250,6 +278,9 @@ public class NavigateFragment extends Fragment implements
         switch (v.getId()) {
             case R.id.bSearch:
                 onMapSearch();
+                break;
+            case R.id.drawRouteBtn:
+                showRoute();
                 break;
         }
     }
@@ -397,7 +428,7 @@ public class NavigateFragment extends Fragment implements
 
                     // Adding all the points in the route to LineOptions
                     lineOptions.addAll(points);
-                    lineOptions.width(2);
+                    lineOptions.width(4);
                     lineOptions.color(Color.RED);
                 }
 
