@@ -1,8 +1,14 @@
 package com.sulkud.touristguide.helper;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -18,7 +24,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class GetNearbyPlacesData extends AsyncTask<Object, String, String> {
+public class GetNearbyPlacesData extends AsyncTask<Object, String, String> implements GoogleMap.OnInfoWindowClickListener{
 
     String googlePlacesData;
     GoogleMap mMap;
@@ -46,9 +52,9 @@ public class GetNearbyPlacesData extends AsyncTask<Object, String, String> {
 
             DownloadUrl downloadUrl = new DownloadUrl();
             googlePlacesData = downloadUrl.readUrl(url);
-            Log.d("GooglePlacesReadTask", "doInBackground Exit");
+            Log.e("GooglePlacesReadTask", "doInBackground Exit");
         } catch (Exception e) {
-            Log.d("GooglePlacesReadTask", e.toString());
+            Log.e("GooglePlacesReadTask", e.toString());
         }
         return googlePlacesData;
     }
@@ -56,11 +62,14 @@ public class GetNearbyPlacesData extends AsyncTask<Object, String, String> {
     @Override
     protected void onPostExecute(String result) {
         Log.d("GooglePlacesReadTask", "onPostExecute Entered");
+
+        mMap.setOnInfoWindowClickListener(this);
+
         List<HashMap<String, String>> nearbyPlacesList = null;
         DataParser dataParser = new DataParser();
         nearbyPlacesList =  dataParser.parse(result);
         Log.i("GET_PLACE_DATA", nearbyPlacesList.toString());
-        if (resultListener != null) {
+        if (resultListener != null && !this.taskTag.equals("poi.attraction")) {
             resultListener.onFinishRequest(nearbyPlacesList);
         } else {
             if (this.taskTag.equals("poi.attraction")) {
@@ -95,8 +104,51 @@ public class GetNearbyPlacesData extends AsyncTask<Object, String, String> {
         }
     }
 
+    @Override
+    public void onInfoWindowClick(final Marker marker) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        AlertDialog dialog = builder.create();
+
+        View view = LayoutInflater.from(context).inflate(R.layout.dialog_history, null);
+        dialog.show();
+        dialog.setContentView(view);
+
+        ImageView placeImage = (ImageView)view.findViewById(R.id.imagePreview);
+        TextView placeName = (TextView)view.findViewById(R.id.tTitle);
+        TextView placeHistory = (TextView)view.findViewById(R.id.tContent);
+        Button dismiss = (Button) view.findViewById(R.id.bDismiss);
+        Button navigate = (Button) view.findViewById(R.id.bStartNavigate);
+
+        int id = context.getResources().getIdentifier("com.sulkud.touristguide:drawable/" + marker.getTag() + "_l", null, null);
+        placeImage.setImageResource(id);
+        placeName.setText(marker.getTitle());
+        placeHistory.setText(getStringResourceByName((String)marker.getTag()));
+        final AlertDialog f_dialog = dialog;
+        dismiss.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                f_dialog.dismiss();
+            }
+        });
+        navigate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                f_dialog.dismiss();
+                resultListener.onStartNavigate(true, marker.getPosition());
+            }
+        });
+    }
+
+    private String getStringResourceByName(String aString) {
+        String packageName = context.getPackageName();
+        int resId = context.getResources().getIdentifier(aString, "string", packageName);
+        return context.getString(resId);
+    }
+
     public interface ResultListener{
         void onFinishRequest(List<HashMap<String, String>> place);
+
+        void onStartNavigate(boolean goNavigate, LatLng latLng);
     }
 
     public List<HashMap<String, String>> getTouristAttractionHashList(){
@@ -163,7 +215,7 @@ public class GetNearbyPlacesData extends AsyncTask<Object, String, String> {
         entry.put("place_name", "Bamban Falls of Bagumbayan");
         entry.put("lat", "6.4568242");
         entry.put("lng", "124.5454731");
-        entry.put("bitmap", "columbio");
+        entry.put("bitmap", "bagumbayan");
         attractions.add(entry);
 
         entry = new HashMap<>();

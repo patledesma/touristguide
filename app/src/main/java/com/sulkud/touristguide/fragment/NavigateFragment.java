@@ -4,8 +4,10 @@ import android.Manifest;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Address;
+import android.location.Criteria;
 import android.location.Geocoder;
 import android.location.Location;
+import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -53,9 +55,12 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+
+import static android.content.Context.LOCATION_SERVICE;
 
 public class NavigateFragment extends Fragment implements
         OnMapReadyCallback,
@@ -75,6 +80,8 @@ public class NavigateFragment extends Fragment implements
     private ArrayList<LatLng> markerPoints = new ArrayList<>();
     private Button drawRouteBtn;
     private LocationRequest mLocationRequest;
+
+    public static LatLng toTouristDestination;
 
     private double baseFare = 9;
     private TextView tBusAirconFare, tBusFare, tMulticabFare, tTricycleFare, tDistance, tDuration;
@@ -110,6 +117,7 @@ public class NavigateFragment extends Fragment implements
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
+        Log.i(getClass().getSimpleName(), "onMapReady");
         mMap = googleMap;
 
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -256,6 +264,11 @@ public class NavigateFragment extends Fragment implements
                         mCurrLocationMarker.setTitle(place.get(0).get("place_name"));
                         mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
                     }
+
+                    @Override
+                    public void onStartNavigate(boolean goNavigate, LatLng latLng1) {
+
+                    }
                 });
                 getNearbyPlacesData.execute(dataTransfer);
 
@@ -311,6 +324,28 @@ public class NavigateFragment extends Fragment implements
         mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
         mMap.animateCamera(CameraUpdateFactory.zoomTo(11));
         Toast.makeText(getActivity(), "Your Current Location", Toast.LENGTH_LONG).show();
+
+        //this is when we have a guest location to travel
+        //ESP tourist spots
+        if (toTouristDestination != null) {
+            Log.e(getClass().getSimpleName(), "toTouristDestination is not null");
+            if (markerPoints != null) {
+                markerPoints.clear();
+                markerPoints.add(toTouristDestination);
+                MarkerOptions options = new MarkerOptions();
+                options.position(toTouristDestination);
+                options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+                mMap.addMarker(options);
+                markerPoints.add(latLng);
+                options.position(latLng);
+                options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+                mMap.addMarker(options);
+                showRoute();
+                Log.d("MarkerPoints", Arrays.deepToString(markerPoints.toArray()));
+            }
+        } else {
+            Log.e(getClass().getSimpleName(), "toTouristDestination is null");
+        }
 
         Log.d("onLocationChanged", String.format("latitude:%.3f longitude:%.3f", latitude, longitude));
 

@@ -340,6 +340,11 @@ public class MainActivity extends AppCompatActivity
                         mCurrLocationMarker.setTitle(place.get(0).get("place_name"));
                 mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
                     }
+
+                    @Override
+                    public void onStartNavigate(boolean goNavigate, LatLng latLng1) {
+                        //ignore this here since we dont need to navigate, UNLESS we need to...
+                    }
                 });
                 getNearbyPlacesData.execute(dataTransfer);
 
@@ -431,6 +436,27 @@ public class MainActivity extends AppCompatActivity
                 dataTransfer[1] = url;
                 Log.d("onClick", url);
                 getNearbyPlacesData = new GetNearbyPlacesData(this, "poi.attraction");
+                getNearbyPlacesData.setResultListener(new GetNearbyPlacesData.ResultListener() {
+                    @Override
+                    public void onFinishRequest(List<HashMap<String, String>> place) {
+                        //dont care about this
+                    }
+
+                    @Override
+                    public void onStartNavigate(boolean goNavigate, LatLng latLng) {
+                        //i need to trigger this to infalte NavigationFragment and set tourist destination
+                        if (navigationFragment != null) {
+                            NavigateFragment.toTouristDestination = latLng;
+                            arcMenu.setVisibility(View.GONE);
+                            removeFragment(eventsFragment);
+                            removeFragment(placesFragment);
+                            switchFragment(navigationFragment);
+                            llSearch.setVisibility(View.GONE);
+                            llButtons.setVisibility(View.GONE);
+                            MainActivity.this.setTitle("Navigate");
+                        }
+                    }
+                });
                 getNearbyPlacesData.execute(dataTransfer);
                 Toast.makeText(MainActivity.this, "Nearby Tourist Attractions", Toast.LENGTH_LONG).show();
                 break;
