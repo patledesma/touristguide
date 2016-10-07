@@ -57,7 +57,8 @@
             android:layout_width="150dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal|bottom"
-            android:text="Draw Route" />
+            android:text="Draw Route"
+            android:visibility="gone"/>
 
     </FrameLayout>
 
@@ -71,7 +72,7 @@
             android:id="@+id/llFare"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="2"
+            android:layout_weight="3"
             android:background="@color/white"
             android:orientation="vertical"
             android:padding="15dp">
@@ -169,11 +170,17 @@
 
         </LinearLayout>
 
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="@color/gray2" />
+
         <LinearLayout
             android:layout_width="0dp"
-            android:layout_weight="1"
+            android:layout_weight="2"
             android:orientation="vertical"
             android:layout_height="match_parent"
+            android:background="@color/white"
             android:padding="15dp">
 
             <TextView
@@ -183,14 +190,27 @@
                 android:textSize="20sp"
                 android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/tDistance"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
-                android:paddingLeft="20dp"
-                android:textSize="18sp" />
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
 
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/icon_distance" />
+
+                <TextView
+                    android:id="@+id/tDistance"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:paddingLeft="20dp"
+                    android:textSize="18sp" />
+
+            </LinearLayout>
 
             <TextView
                 android:layout_width="match_parent"
@@ -199,14 +219,27 @@
                 android:textSize="20sp"
                 android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/tDuration"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
-                android:paddingLeft="20dp"
-                android:textSize="18sp" />
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
 
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/icon_duration" />
+
+                <TextView
+                    android:id="@+id/tDuration"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:paddingLeft="20dp"
+                    android:textSize="18sp" />
+
+            </LinearLayout>
 
         </LinearLayout>
 

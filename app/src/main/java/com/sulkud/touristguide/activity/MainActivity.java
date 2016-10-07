@@ -75,7 +75,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.zip.Inflater;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
@@ -259,6 +258,7 @@ public class MainActivity extends AppCompatActivity
         Log.w("StackTrace", getSupportFragmentManager().getBackStackEntryCount() + " stack count");
 
         if (id == R.id.nav_map) {
+            arcMenu.setVisibility(View.VISIBLE);
             removeFragment(eventsFragment);
             removeFragment(placesFragment);
             removeFragment(navigationFragment);
@@ -266,12 +266,14 @@ public class MainActivity extends AppCompatActivity
             llButtons.setVisibility(View.VISIBLE);
             this.setTitle("Maps");
         } else if (id == R.id.nav_visited_places) {
+            arcMenu.setVisibility(View.GONE);
             removeFragment(eventsFragment);
             removeFragment(navigationFragment);
             switchFragment(placesFragment);
             llSearch.setVisibility(View.GONE);
             llButtons.setVisibility(View.GONE);
         } else if (id == R.id.nav_events) {
+            arcMenu.setVisibility(View.GONE);
             removeFragment(placesFragment);
             removeFragment(navigationFragment);
             switchFragment(eventsFragment);
@@ -279,6 +281,7 @@ public class MainActivity extends AppCompatActivity
             llButtons.setVisibility(View.GONE);
             this.setTitle("Events");
         } else if (id == R.id.nav_navigate) {
+            arcMenu.setVisibility(View.GONE);
             removeFragment(eventsFragment);
             removeFragment(placesFragment);
             switchFragment(navigationFragment);
@@ -813,5 +816,4 @@ public class MainActivity extends AppCompatActivity
             mMap.addPolyline(lineOptions);
         }
     }
-
 }

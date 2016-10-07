@@ -75,7 +75,7 @@ public class NavigateFragment extends Fragment implements
     private LocationRequest mLocationRequest;
 
     private double baseFare = 9;
-    private TextView tBusAirconFare, tBusFare, tMulticabFare, tTricycleFare;
+    private TextView tBusAirconFare, tBusFare, tMulticabFare, tTricycleFare, tDistance, tDuration;
 
     @Nullable
     @Override
@@ -101,6 +101,8 @@ public class NavigateFragment extends Fragment implements
         tBusFare = (TextView) view.findViewById(R.id.tBusFare);
         tMulticabFare = (TextView) view.findViewById(R.id.tMulticabFare);
         tTricycleFare = (TextView) view.findViewById(R.id.tTriCycleFare);
+        tDistance = (TextView) view.findViewById(R.id.tDistance);
+        tDuration = (TextView) view.findViewById(R.id.tDuration);
     }
 
     @Override
@@ -119,7 +121,7 @@ public class NavigateFragment extends Fragment implements
             mMap.setMyLocationEnabled(true);
         }
 
-        mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+        /*mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
             public void onMapClick(LatLng point) {
                 Log.e("NAVIGATION", "onmapclick : " + markerPoints.size());
@@ -162,27 +164,24 @@ public class NavigateFragment extends Fragment implements
                 // Removes all the points in the ArrayList
                 markerPoints.clear();
             }
-        });
+        });*/
+    }
 
-        drawRouteBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (markerPoints.size() >= 2) {
-                    LatLng origin = markerPoints.get(0);
-                    LatLng dest = markerPoints.get(1);
+    private void showRoute() {
+        if (markerPoints.size() >= 2) {
+            LatLng origin = markerPoints.get(0);
+            LatLng dest = markerPoints.get(1);
 
-                    // Getting URL to the Google Directions API
-                    String url = getDirectionsUrl(origin, dest);
+            // Getting URL to the Google Directions API
+            String url = getDirectionsUrl(origin, dest);
 
-                    showFare(origin, dest);
+            showFare(origin, dest);
 
-                    DownloadTask downloadTask = new DownloadTask();
+            DownloadTask downloadTask = new DownloadTask();
 
-                    // Start downloading json data from Google Directions API
-                    downloadTask.execute(url);
-                }
-            }
-        });
+            // Start downloading json data from Google Directions API
+            downloadTask.execute(url);
+        }
     }
 
     protected synchronized void buildGoogleApiClient() {
