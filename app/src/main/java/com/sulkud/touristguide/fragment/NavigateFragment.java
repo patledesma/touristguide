@@ -4,10 +4,8 @@ import android.Manifest;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Address;
-import android.location.Criteria;
 import android.location.Geocoder;
 import android.location.Location;
-import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -53,14 +51,10 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
-
-import static android.content.Context.LOCATION_SERVICE;
 
 public class NavigateFragment extends Fragment implements
         OnMapReadyCallback,
@@ -80,6 +74,7 @@ public class NavigateFragment extends Fragment implements
     private ArrayList<LatLng> markerPoints = new ArrayList<>();
     private Button drawRouteBtn;
     private LocationRequest mLocationRequest;
+    private LatLng currentLocation;
 
     public static LatLng toTouristDestination;
     public static boolean startToTouristDestination = false;
@@ -133,7 +128,7 @@ public class NavigateFragment extends Fragment implements
             mMap.setMyLocationEnabled(true);
         }
 
-        mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+        /*mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
             public void onMapClick(LatLng point) {
                 Log.e("NAVIGATION", "onmapclick : " + markerPoints.size());
@@ -141,32 +136,22 @@ public class NavigateFragment extends Fragment implements
                     mMap.clear();
                     markerPoints.clear();
                     drawRouteBtn.setVisibility(View.GONE);
+                    showRoute();
                 }
 
                 if (markerPoints.size() > 2) {
                     return;
                 }
 
-                // Already 10 locations with 8 waypoints and 1 start location and 1 end location.
-                // Upto 8 waypoints are allowed in a query for non-business users
-
-
-                // Adding new item to the ArrayList
                 markerPoints.add(point);
-
-                // Creating MarkerOptions
                 MarkerOptions options = new MarkerOptions();
-
-                // Setting the position of the marker
                 options.position(point);
-
                 options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
 
-                // Add new marker to the Google Map Android API V2
                 mMap.addMarker(options);
                 drawRouteBtn.setVisibility(View.VISIBLE);
             }
-        });
+        });*/
 
         mMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
 
@@ -238,6 +223,9 @@ public class NavigateFragment extends Fragment implements
         String location = locationSearch.getText().toString();
         List<Address> addressList = null;
 
+        markerPoints.clear();
+        mMap.clear();
+
         if (location != null || !location.equals("")) {
             Geocoder geocoder = new Geocoder(getActivity());
             String url = "";
@@ -245,14 +233,9 @@ public class NavigateFragment extends Fragment implements
             GetNearbyPlacesData getNearbyPlacesData;
             try {
                 addressList = geocoder.getFromLocationName(location, 1);
-
                 Address address = addressList.get(0);
+
                 final LatLng latLng = new LatLng(address.getLatitude(), address.getLongitude());
-                /*MarkerOptions markerOptions = new MarkerOptions();
-                markerOptions.position(latLng);
-                markerOptions.title("Current Position");
-                markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
-                mCurrLocationMarker = mMap.addMarker(markerOptions);*/
                 url = getCurrentPlaceUrl(latLng.latitude, latLng.longitude);
                 dataTransfer = new Object[2];
                 dataTransfer[0] = mMap;
@@ -272,6 +255,21 @@ public class NavigateFragment extends Fragment implements
                     }
                 });
                 getNearbyPlacesData.execute(dataTransfer);
+
+                markerPoints.add(latLng);
+                markerPoints.add(currentLocation);
+                MarkerOptions options = new MarkerOptions();
+                options.position(latLng);
+                options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+
+                MarkerOptions options2 = new MarkerOptions();
+                options2.position(currentLocation);
+                options2.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+
+                mMap.addMarker(options);
+                mMap.addMarker(options2);
+
+                showRoute();
 
             } catch (IOException e) {
                 e.printStackTrace();
@@ -320,6 +318,7 @@ public class NavigateFragment extends Fragment implements
         markerOptions.title("Current Position");
         markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
         mCurrLocationMarker = mMap.addMarker(markerOptions);
+        currentLocation = latLng;
 
         //move map camera
         mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));

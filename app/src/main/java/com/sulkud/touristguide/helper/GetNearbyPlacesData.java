@@ -109,7 +109,7 @@ public class GetNearbyPlacesData extends AsyncTask<Object, String, String> imple
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         AlertDialog dialog = builder.create();
 
-        View view = LayoutInflater.from(context).inflate(R.layout.dialog_history, null);
+        View view = LayoutInflater.from(context).inflate(R.layout.dialog_events, null);
         dialog.show();
         dialog.setContentView(view);
 

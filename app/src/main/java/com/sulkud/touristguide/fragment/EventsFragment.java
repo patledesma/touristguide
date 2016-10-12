@@ -42,10 +42,10 @@ public class EventsFragment extends Fragment {
                 TextView tContent = (TextView) item.findViewById(R.id.tContent);
 
                 String[] events = getActivity().getResources().getStringArray(R.array.events);
-                String[] descriptoin = getActivity().getResources().getStringArray(R.array.events_description);
+                String[] description = getActivity().getResources().getStringArray(R.array.events_description);
 
                 tTitle.setText(events[position] + "");
-                tContent.setText(descriptoin[position] + "");
+                tContent.setText(description[position] + "");
 
                 final Dialog dialog = new Dialog(getActivity());
                 dialog.setContentView(item);

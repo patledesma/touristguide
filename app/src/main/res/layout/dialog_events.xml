@@ -8,6 +8,25 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="240dp">
+            <ImageView
+                android:id="@+id/imagePreview"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:adjustViewBounds="true" />
+
+            <Button
+                android:id="@+id/bStartNavigate"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_gravity="bottom|right"
+                android:layout_margin="5dp"
+                android:background="@drawable/navigation"/>
+        </FrameLayout>
+
         <TextView
             android:id="@+id/tTitle"
             android:layout_width="match_parent"

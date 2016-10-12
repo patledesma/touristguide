@@ -11,6 +11,10 @@
             android:icon="@drawable/icon_visited"
             android:title="@string/visited_places" />
         <item
+            android:id="@+id/nav_bookmark"
+            android:icon="@drawable/icon_bookmark"
+            android:title="@string/bookmark" />
+        <item
             android:id="@+id/nav_events"
             android:icon="@drawable/icon_events"
             android:title="@string/events" />

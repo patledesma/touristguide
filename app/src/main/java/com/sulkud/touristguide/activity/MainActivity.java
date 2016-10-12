@@ -56,9 +56,11 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import com.sa90.materialarcmenu.ArcMenu;
 import com.sulkud.touristguide.R;
 import com.sulkud.touristguide.adapter.CustomInfoWindowAdapter;
+import com.sulkud.touristguide.fragment.BookmarkedPlacesFragment;
 import com.sulkud.touristguide.fragment.EventsFragment;
 import com.sulkud.touristguide.fragment.NavigateFragment;
 import com.sulkud.touristguide.fragment.PlacesFragment;
+import com.sulkud.touristguide.fragment.VisitedPlacesFragment;
 import com.sulkud.touristguide.helper.DirectionsJSONParser;
 import com.sulkud.touristguide.helper.GetNearbyPlacesData;
 import com.sulkud.touristguide.helper.database.DatabaseHandler;
@@ -86,7 +88,7 @@ public class MainActivity extends AppCompatActivity
         LocationListener {
 
     private GoogleMap mMap;
-    private Fragment eventsFragment, placesFragment, navigationFragment;
+    private Fragment eventsFragment, visitedPlacesFragment, bookmarkedPlacesFragment, navigationFragment;
 
     private ArcMenu arcMenu;
     private FloatingActionButton fabHospital, fabHotel, fabBank, fabRestaurant, fabTourist;
@@ -167,7 +169,8 @@ public class MainActivity extends AppCompatActivity
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         eventsFragment = new EventsFragment();
-        placesFragment = new PlacesFragment();
+        visitedPlacesFragment = new VisitedPlacesFragment();
+        bookmarkedPlacesFragment = new BookmarkedPlacesFragment();
         navigationFragment = new NavigateFragment();
 
         dbHandler = new DatabaseHandler(this);
@@ -260,7 +263,8 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.nav_map) {
             arcMenu.setVisibility(View.VISIBLE);
             removeFragment(eventsFragment);
-            removeFragment(placesFragment);
+            removeFragment(visitedPlacesFragment);
+            removeFragment(bookmarkedPlacesFragment);
             removeFragment(navigationFragment);
             llSearch.setVisibility(View.VISIBLE);
             llButtons.setVisibility(View.VISIBLE);
@@ -269,12 +273,24 @@ public class MainActivity extends AppCompatActivity
             arcMenu.setVisibility(View.GONE);
             removeFragment(eventsFragment);
             removeFragment(navigationFragment);
-            switchFragment(placesFragment);
+            removeFragment(bookmarkedPlacesFragment);
+            switchFragment(visitedPlacesFragment);
             llSearch.setVisibility(View.GONE);
             llButtons.setVisibility(View.GONE);
+            this.setTitle("Visited Places");
+        } else if (id == R.id.nav_bookmark) {
+            arcMenu.setVisibility(View.GONE);
+            removeFragment(visitedPlacesFragment);
+            removeFragment(navigationFragment);
+            removeFragment(visitedPlacesFragment);
+            switchFragment(bookmarkedPlacesFragment);
+            llSearch.setVisibility(View.GONE);
+            llButtons.setVisibility(View.GONE);
+            this.setTitle("Bookmarked Places");
         } else if (id == R.id.nav_events) {
             arcMenu.setVisibility(View.GONE);
-            removeFragment(placesFragment);
+            removeFragment(visitedPlacesFragment);
+            removeFragment(bookmarkedPlacesFragment);
             removeFragment(navigationFragment);
             switchFragment(eventsFragment);
             llSearch.setVisibility(View.GONE);
@@ -283,7 +299,8 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_navigate) {
             arcMenu.setVisibility(View.GONE);
             removeFragment(eventsFragment);
-            removeFragment(placesFragment);
+            removeFragment(visitedPlacesFragment);
+            removeFragment(bookmarkedPlacesFragment);
             switchFragment(navigationFragment);
             llSearch.setVisibility(View.GONE);
             llButtons.setVisibility(View.GONE);
@@ -450,7 +467,7 @@ public class MainActivity extends AppCompatActivity
                             NavigateFragment.startToTouristDestination = goNavigate;
                             arcMenu.setVisibility(View.GONE);
                             removeFragment(eventsFragment);
-                            removeFragment(placesFragment);
+                            removeFragment(visitedPlacesFragment);
                             switchFragment(navigationFragment);
                             llSearch.setVisibility(View.GONE);
                             llButtons.setVisibility(View.GONE);
