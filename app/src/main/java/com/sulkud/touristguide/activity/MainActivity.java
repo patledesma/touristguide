@@ -1,6 +1,8 @@
 package com.sulkud.touristguide.activity;
 
 import android.Manifest;
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -15,6 +17,9 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -59,11 +64,11 @@ import com.sulkud.touristguide.adapter.CustomInfoWindowAdapter;
 import com.sulkud.touristguide.fragment.BookmarkedPlacesFragment;
 import com.sulkud.touristguide.fragment.EventsFragment;
 import com.sulkud.touristguide.fragment.NavigateFragment;
-import com.sulkud.touristguide.fragment.PlacesFragment;
 import com.sulkud.touristguide.fragment.VisitedPlacesFragment;
 import com.sulkud.touristguide.helper.DirectionsJSONParser;
 import com.sulkud.touristguide.helper.GetNearbyPlacesData;
 import com.sulkud.touristguide.helper.database.DatabaseHandler;
+import com.sulkud.touristguide.interfaces.PlaceSelectedListener;
 import com.sulkud.touristguide.models.PlaceModel;
 
 import org.json.JSONObject;
@@ -664,19 +669,20 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void showHistory(View v) {
-        LayoutInflater inflater = this.getLayoutInflater();
-        View view = inflater.inflate(R.layout.dialog_history, null);
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+        final AlertDialog dialog = builder.create();
+
+        View view = LayoutInflater.from(MainActivity.this).inflate(R.layout.dialog_history, null);
+        dialog.show();
+        dialog.setContentView(view);
+
         TextView tTitle = (TextView) view.findViewById(R.id.tTitle);
         TextView tContent = (TextView) view.findViewById(R.id.tContent);
 
         tTitle.setText("HISTORY");
         tContent.setText(R.string.history);
 
-        final Dialog dialog = new Dialog(MainActivity.this);
-        dialog.setContentView(view);
-
         Button dialogButton = (Button) dialog.findViewById(R.id.bDismiss);
-        // if button is clicked, close the custom dialog
         dialogButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -858,6 +864,26 @@ public class MainActivity extends AppCompatActivity
 
             // Drawing polyline in the Google Map for the i-th route
             mMap.addPolyline(lineOptions);
+        }
+    }
+
+    public void testFunction(PlaceModel placeModel) {
+        Log.e("MainActivity", "testFunction !!!!!!!!!!!!!");
+        navigationFragment = new NavigateFragment();
+        if (navigationFragment != null) {
+            Log.e("MainActivity", "navigationFragment is not null");
+            NavigateFragment.toTouristDestination = new LatLng(Double.valueOf(placeModel.latitude),
+                    Double.valueOf(placeModel.longitude));
+            NavigateFragment.startToTouristDestination = true;
+            arcMenu.setVisibility(View.GONE);
+            removeFragment(eventsFragment);
+            removeFragment(visitedPlacesFragment);
+            switchFragment(navigationFragment);
+            llSearch.setVisibility(View.GONE);
+            llButtons.setVisibility(View.GONE);
+            MainActivity.this.setTitle("Navigate");
+        } else {
+            Log.e("MainActivity", "navigation is null fvcking fragment!!!!!!");
         }
     }
 }

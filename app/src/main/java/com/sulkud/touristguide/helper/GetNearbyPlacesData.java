@@ -118,6 +118,7 @@ public class GetNearbyPlacesData extends AsyncTask<Object, String, String> imple
         TextView placeHistory = (TextView)view.findViewById(R.id.tContent);
         Button dismiss = (Button) view.findViewById(R.id.bDismiss);
         Button navigate = (Button) view.findViewById(R.id.bStartNavigate);
+        navigate.setVisibility(View.VISIBLE);
 
         int id = context.getResources().getIdentifier("com.sulkud.touristguide:drawable/" + marker.getTag() + "_l", null, null);
         placeImage.setImageResource(id);

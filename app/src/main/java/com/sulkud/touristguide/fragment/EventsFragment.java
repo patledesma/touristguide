@@ -1,14 +1,18 @@
 package com.sulkud.touristguide.fragment;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -36,19 +40,29 @@ public class EventsFragment extends Fragment {
         lvEventList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                LayoutInflater inflater = getActivity().getLayoutInflater();
-                View item = inflater.inflate(R.layout.dialog_history, null);
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                final AlertDialog dialog = builder.create();
+
+                View item = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_events, null);
+                dialog.show();
+                dialog.setContentView(item);
+
                 TextView tTitle = (TextView) item.findViewById(R.id.tTitle);
                 TextView tContent = (TextView) item.findViewById(R.id.tContent);
+                ImageView iPreview = (ImageView) item.findViewById(R.id.imagePreview);
+                Button bNavigate = (Button) item.findViewById(R.id.bStartNavigate);
+                bNavigate.setVisibility(View.GONE);
 
                 String[] events = getActivity().getResources().getStringArray(R.array.events);
                 String[] description = getActivity().getResources().getStringArray(R.array.events_description);
+                TypedArray imgs = getResources().obtainTypedArray(R.array.events_preview);
+                imgs.getResourceId(position, -1);
+
+                iPreview.setImageResource(imgs.getResourceId(position, -1));
+                imgs.recycle();
 
                 tTitle.setText(events[position] + "");
                 tContent.setText(description[position] + "");
-
-                final Dialog dialog = new Dialog(getActivity());
-                dialog.setContentView(item);
 
                 Button dialogButton = (Button) dialog.findViewById(R.id.bDismiss);
                 // if button is clicked, close the custom dialog

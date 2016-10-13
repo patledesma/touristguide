@@ -57,6 +57,22 @@
         <item>Description for Inugyunay</item>
     </string-array>
 
+    <integer-array name="events_preview">
+        <item>@drawable/bansadayaw</item>
+        <item>@drawable/kastifun</item>
+        <item>@drawable/hinabyog</item>
+        <item>@drawable/pasundayag</item>
+        <item>@drawable/salagaan</item>
+        <item>@drawable/timpuyog</item>
+        <item>@drawable/hinugyaw</item>
+        <item>@drawable/kanduli</item>
+        <item>@drawable/kalilang</item>
+        <item>@drawable/sambuyawan</item>
+        <item>@drawable/sulok</item>
+        <item>@drawable/talakudong</item>
+        <item>@drawable/inugyanay</item>
+    </integer-array>
+
     <string-array name="dates">
         <item>September 10</item>
         <item>August 6</item>

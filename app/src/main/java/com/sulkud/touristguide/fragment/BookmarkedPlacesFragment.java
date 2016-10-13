@@ -3,19 +3,28 @@ package com.sulkud.touristguide.fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.sulkud.touristguide.R;
+import com.sulkud.touristguide.activity.MainActivity;
 import com.sulkud.touristguide.adapter.PlacesListAdapter;
 import com.sulkud.touristguide.helper.database.DatabaseHandler;
 import com.sulkud.touristguide.interfaces.PlaceSelectedListener;
 
-public class BookmarkedPlacesFragment extends Fragment implements AdapterView.OnItemClickListener {
+public class BookmarkedPlacesFragment extends Fragment implements OnMapReadyCallback, AdapterView.OnItemClickListener {
 
     ViewGroup view;
     private ListView lvVisitedPlaces;
@@ -23,33 +32,39 @@ public class BookmarkedPlacesFragment extends Fragment implements AdapterView.On
     private PlaceSelectedListener placeSelectedListener;
     private DatabaseHandler databaseHandler;
 
-    //this is just a sample coordinates, this will be gone when real geolocations are given
-    /*String[] randPlaces = {
-            "6.520817, 124.839346",
-            "6.506417, 124.859352",
-            "6.499520, 124.834039",
-            "6.488162, 124.842817",
-            "6.463213, 124.872621",
-            "6.523454, 124.826077",
-            "6.522845, 124.862210",
-            "6.493435, 124.825669",
-            "6.494986, 124.844801",
-            "6.497736, 124.850122",
-            "6.498070, 124.837682",
-            "6.505261, 124.852617"};*/
+    private TextView tEmpty;
+    private GoogleMap mMap;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup
             container, @Nullable Bundle savedInstanceState) {
-        view = (ViewGroup) inflater.inflate(R.layout.fragment_bookmarked_places, container, false);
+        view = (ViewGroup) inflater.inflate(R.layout.fragment_places, container, false);
         databaseHandler = new DatabaseHandler(getActivity());
 
-        lvVisitedPlaces = (ListView) view.findViewById(R.id.lvBookmarkedPlaces);
+        tEmpty = (TextView) view.findViewById(R.id.tEmpty);
+
+        lvVisitedPlaces = (ListView) view.findViewById(R.id.lvList);
         adapter = new PlacesListAdapter(getActivity().getApplicationContext(), databaseHandler.getAllPlaces(DatabaseHandler.TABLE_TAG_TYPE_BOOKMARKED));
         lvVisitedPlaces.setAdapter(adapter);
         lvVisitedPlaces.setOnItemClickListener(this);
+
+        if (adapter.getCount() == 0) {
+            tEmpty.setVisibility(View.VISIBLE);
+            tEmpty.setText("No Bookmarked Places");
+        } else {
+            tEmpty.setVisibility(View.GONE);
+        }
+
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager()
+                .findFragmentById(R.id.placesMap);
+        mapFragment.getMapAsync(this);
+        super.onResume();
     }
 
     public void setOnPlaceSelectedListener(PlaceSelectedListener placeSelectedListener) {
@@ -59,20 +74,17 @@ public class BookmarkedPlacesFragment extends Fragment implements AdapterView.On
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
         Log.i(getClass().getSimpleName(), "itemClicked!");
-        this.placeSelectedListener.onPlaceLocationSelectedListener(adapter.getItem(i));
+//        this.placeSelectedListener.onPlaceLocationSelectedListener(adapter.getItem(i));
+        /*FragmentActivity activity = (FragmentActivity)getApplicationContext();
+        activity.testFunction(adapter.getItem(i));*/
     }
 
-    /*private List<PlaceModel> createPlaceList() {
-        List<PlaceModel> places = new ArrayList<>();
-        for (int i = 0; i < randPlaces.length; i++) {
-            PlaceModel item = new PlaceModel();
-            item.placeName = "Place " + (i + 1);
-            String[] splitLoc = randPlaces[i].split(",");
-            item.latitude = splitLoc[0];
-            item.longitude = splitLoc[1];
-
-            places.add(item);
-        }
-        return places;
-    }*/
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        Log.i(getClass().getSimpleName(), "onMapReady");
+        mMap = googleMap;
+        LatLng tacurong = new LatLng(6.687757, 124.678383);
+        mMap.addMarker(new MarkerOptions().position(tacurong).title("Marker in Tacurong"));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(tacurong, 10.0f));
+    }
 }

@@ -9,13 +9,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
 import com.sulkud.touristguide.R;
 import com.sulkud.touristguide.adapter.PlacesListAdapter;
 import com.sulkud.touristguide.helper.database.DatabaseHandler;
 import com.sulkud.touristguide.interfaces.PlaceSelectedListener;
 
-public class VisitedPlacesFragment extends Fragment implements AdapterView.OnItemClickListener {
+public class VisitedPlacesFragment extends Fragment implements OnMapReadyCallback, AdapterView.OnItemClickListener {
 
     ViewGroup view;
     private PlacesListAdapter adapter;
@@ -23,38 +26,32 @@ public class VisitedPlacesFragment extends Fragment implements AdapterView.OnIte
     private ListView lvVisitedPlaces;
     private DatabaseHandler databaseHandler;
 
-    //this is just a sample coordinates, this will be gone when real geolocations are given
-    /*String[] randPlaces = {
-            "6.520817, 124.839346",
-            "6.506417, 124.859352",
-            "6.499520, 124.834039",
-            "6.488162, 124.842817",
-            "6.463213, 124.872621",
-            "6.523454, 124.826077",
-            "6.522845, 124.862210",
-            "6.493435, 124.825669",
-            "6.494986, 124.844801",
-            "6.497736, 124.850122",
-            "6.498070, 124.837682",
-            "6.505261, 124.852617"};*/
+    private TextView tEmpty;
+
+    GoogleMap mMap;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         Log.i(getClass().getSimpleName(), "onCreateView");
-        view = (ViewGroup) inflater.inflate(R.layout.fragment_visited_places, container, false);
+        view = (ViewGroup) inflater.inflate(R.layout.fragment_places, container, false);
         databaseHandler = new DatabaseHandler(getActivity());
 
+        tEmpty = (TextView) view.findViewById(R.id.tEmpty);
+
         adapter = new PlacesListAdapter(getActivity().getApplicationContext(), databaseHandler.getAllPlaces(DatabaseHandler.TABLE_TAG_TYPE_VISITED));
-        lvVisitedPlaces = (ListView) view.findViewById(R.id.lvVistedPlaces);
+        lvVisitedPlaces = (ListView) view.findViewById(R.id.lvList);
         lvVisitedPlaces.setOnItemClickListener(this);
-        lvVisitedPlaces.post(new Runnable() {
-            @Override
-            public void run() {
-                lvVisitedPlaces.setAdapter(adapter);
-            }
-        });
+        lvVisitedPlaces.setAdapter(adapter);
         Log.i(getClass().getSimpleName(), adapter.getCount() + " item count");
+
+        if (adapter.getCount() == 0) {
+            tEmpty.setVisibility(View.VISIBLE);
+            tEmpty.setText("No Visited Places");
+        } else {
+            tEmpty.setVisibility(View.GONE);
+        }
+
         return view;
     }
 
@@ -68,4 +65,8 @@ public class VisitedPlacesFragment extends Fragment implements AdapterView.OnIte
         this.placeSelectedListener.onPlaceLocationSelectedListener(adapter.getItem(i));
     }
 
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+
+    }
 }
