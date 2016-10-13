@@ -280,6 +280,22 @@ public class MainActivity extends AppCompatActivity
             removeFragment(navigationFragment);
             removeFragment(bookmarkedPlacesFragment);
             switchFragment(visitedPlacesFragment);
+            ((VisitedPlacesFragment)visitedPlacesFragment).setOnPlaceSelectedListener(new PlaceSelectedListener() {
+                @Override
+                public void onPlaceLocationSelectedListener(PlaceModel placeModel) {
+                    if (navigationFragment != null) {
+                        NavigateFragment.toTouristDestination = new LatLng(Double.parseDouble(placeModel.latitude), Double.parseDouble(placeModel.longitude));
+                        NavigateFragment.startToTouristDestination = true;
+                        arcMenu.setVisibility(View.GONE);
+                        removeFragment(eventsFragment);
+                        removeFragment(visitedPlacesFragment);
+                        switchFragment(navigationFragment);
+                        llSearch.setVisibility(View.GONE);
+                        llButtons.setVisibility(View.GONE);
+                        MainActivity.this.setTitle("Navigate");
+                    }
+                }
+            });
             llSearch.setVisibility(View.GONE);
             llButtons.setVisibility(View.GONE);
             this.setTitle("Visited Places");
@@ -291,6 +307,22 @@ public class MainActivity extends AppCompatActivity
             switchFragment(bookmarkedPlacesFragment);
             llSearch.setVisibility(View.GONE);
             llButtons.setVisibility(View.GONE);
+            ((VisitedPlacesFragment)visitedPlacesFragment).setOnPlaceSelectedListener(new PlaceSelectedListener() {
+                @Override
+                public void onPlaceLocationSelectedListener(PlaceModel placeModel) {
+                    if (navigationFragment != null) {
+                        NavigateFragment.toTouristDestination = new LatLng(Double.parseDouble(placeModel.latitude), Double.parseDouble(placeModel.longitude));
+                        NavigateFragment.startToTouristDestination = true;
+                        arcMenu.setVisibility(View.GONE);
+                        removeFragment(eventsFragment);
+                        removeFragment(visitedPlacesFragment);
+                        switchFragment(navigationFragment);
+                        llSearch.setVisibility(View.GONE);
+                        llButtons.setVisibility(View.GONE);
+                        MainActivity.this.setTitle("Navigate");
+                    }
+                }
+            });
             this.setTitle("Bookmarked Places");
         } else if (id == R.id.nav_events) {
             arcMenu.setVisibility(View.GONE);
